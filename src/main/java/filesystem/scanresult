@@ -1,0 +1,180 @@
+/*
+ * 查询成绩*/
+
+package FileSystem;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class scanresult extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Statement ps;
+	ResultSet rs;
+	Connection con;
+	String url;
+	
+	JScrollPane jScrollPane1 = new JScrollPane();
+	Object[][] rowData = new Object[20][6];
+	String[] columnNames = {"考试类型", "学号", "姓名", "班号", "课程名称", "分数"};
+	JTable jTable1 = new JTable(rowData, columnNames);
+	JButton cancel = new JButton();
+	JButton ok = new JButton();
+	JTextField input = new JTextField();
+	ButtonGroup buttonGroup2 = new ButtonGroup();
+	JRadioButton xh = new JRadioButton();
+	JRadioButton kc = new JRadioButton();
+	JRadioButton bh = new JRadioButton();
+	public scanresult() 
+	{
+		try
+		{
+			jbInit();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) 
+	{
+		new scanresult();
+	}
+
+	private void jbInit() throws Exception 
+	{
+	    this.setLocale(java.util.Locale.getDefault());
+	    this.getContentPane().setLayout(null);
+	    jScrollPane1.setBounds(new Rectangle(6, 0, 780, 400));
+	    ok.setToolTipText("直接点击确定，可查询全部成绩信息");
+	    cancel.setBounds(new Rectangle(578, 412, 85, 30));
+	    cancel.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cancel.setText("取   消");
+	    cancel.addActionListener(new sacnresult_cancel_actionAdapter(this));
+	    ok.setBounds(new Rectangle(465, 412, 85, 34));
+	    ok.setFont(new java.awt.Font("Dialog", 0, 15));
+	    ok.setText("确   定");
+	    ok.addActionListener(new sacnresult_ok_actionAdapter(this));
+	    input.setFont(new java.awt.Font("Dialog", 0, 15));
+	    input.setText("");
+	    input.setBounds(new Rectangle(291, 410, 124, 31));
+	    xh.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xh.setRolloverEnabled(false);
+	    xh.setText("按学号");
+	    xh.setBounds(new Rectangle(19, 414, 74, 34));
+	    kc.setBounds(new Rectangle(196, 415, 74, 34));
+	    kc.setText("按课程");
+	    kc.setRolloverEnabled(false);
+	    kc.setFont(new java.awt.Font("Dialog", 0, 15));
+	    bh.setBounds(new Rectangle(111, 413, 74, 34));
+	    bh.setText("按班号");
+	    bh.setRolloverEnabled(false);
+	    bh.setFont(new java.awt.Font("Dialog", 0, 15));
+	    this.getContentPane().add(jScrollPane1, null);
+	    this.getContentPane().add(input, null);
+	    this.getContentPane().add(ok, null);
+	    this.getContentPane().add(cancel, null);
+	    this.getContentPane().add(kc, null);
+	    this.getContentPane().add(bh, null);
+	    this.getContentPane().add(xh, null);
+	    jScrollPane1.getViewport().add(jTable1, null);
+	    this.setBounds(100, 100, 800, 500);
+	    this.setVisible(true);
+	    buttonGroup2.add(xh);
+	    buttonGroup2.add(bh);
+	    buttonGroup2.add(kc);
+	}
+
+	void cancel_actionPerformed(ActionEvent e)
+	{
+		this.dispose();
+	}
+
+	void ok_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{ 
+			Class.forName("com.microsoft.jdbc.sqlserver.SQLServerDriver");
+			Connection con = DriverManager.getConnection("jdbc:microsoft:sqlserver://localhost:1433;DatabaseName=学生档案管理系统;","sa", "123456");
+
+			ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			
+			int i = 0;
+	      	try 
+	      	{
+	      		if (xh.isSelected()) 
+	      		{
+	      			rs = ps.executeQuery("select * from result where student_ID='"+input.getText().trim()+ "'");
+	      		}
+	      		else if (kc.isSelected()) 
+	      		{
+	      			rs = ps.executeQuery("select * from result where course_Name='" +input.getText().trim() + "'");
+	      		}
+	      		else if (bh.isSelected()) 
+	      		{
+	      			rs = ps.executeQuery("select * from result where class_NO='" +input.getText().trim() + "'");
+	      		}
+	      		else
+	      			rs = ps.executeQuery("select * from result");
+	      	}
+	
+	      	catch (Exception err) 
+	      	{
+	      		err.getMessage();
+	      		JOptionPane.showMessageDialog(null, "没有数据！");
+	      	}
+	
+	      	while (rs.next()) 
+	      	{
+		        rowData[i][0] = rs.getString("exam_No");
+		        rowData[i][1] = rs.getString("student_ID");
+		        rowData[i][2] = rs.getString("student_Name");
+		        rowData[i][3] = rs.getString("class_NO");
+		        rowData[i][4] = rs.getString("course_Name");
+		        rowData[i][5] = rs.getString("result");
+		        i++;
+	      	}
+		}
+		catch (Exception err) 
+		{
+			err.getMessage();
+			JOptionPane.showMessageDialog(null, err);
+		}
+	}
+}
+
+class sacnresult_cancel_actionAdapter implements java.awt.event.ActionListener 
+{
+	scanresult adaptee;
+
+	sacnresult_cancel_actionAdapter(scanresult adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.cancel_actionPerformed(e);
+	}
+}
+
+class sacnresult_ok_actionAdapter  implements java.awt.event.ActionListener 
+{
+	scanresult adaptee;
+
+	sacnresult_ok_actionAdapter(scanresult adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.ok_actionPerformed(e);
+	}
+}
