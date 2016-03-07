@@ -1,0 +1,96 @@
+package FileSystem;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class cxbj extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Statement ps;
+	ResultSet rs;
+	Connection con;
+	String url;
+	int i=0;
+	JScrollPane jScrollPane1 = new JScrollPane();
+	Object[][] rowData = new Object[10][4];
+	String[] columnNames = {"班号", "年级", "班主任","教室"};
+	JTable jTable1 = new JTable(rowData, columnNames);
+	JButton ok = new JButton();
+	public cxbj() 
+	{
+		try
+		{
+			jbInit();
+		}
+		catch(Exception e) 
+		{
+			e.printStackTrace();
+		}
+		try 
+		{ //连接数据库
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123456");
+
+            ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+            rs = ps.executeQuery("select * from class");
+            while (rs.next()) 
+            {
+            	rowData[i][0] = rs.getString("class_No");
+                rowData[i][1] = rs.getString("grade");
+                rowData[i][2] = rs.getString("director");
+                rowData[i][3] = rs.getString("classroom_No");
+                i = i + 1;
+            }
+
+		}
+
+		catch (Exception err) 
+		{
+			JOptionPane.showMessageDialog(null, err);
+		}
+	}
+	public static void main(String[] args) 
+	{
+		new cxbj();
+	}
+	private void jbInit() throws Exception 
+	{
+		this.setResizable(false);
+		this.setTitle("浏览用户");
+		this.getContentPane().setLayout(null);
+		jScrollPane1.setBounds(new Rectangle(2, 10, 433, 185));
+		ok.setBounds(new Rectangle(177, 209, 92, 34));
+		ok.setFont(new java.awt.Font("Dialog", 0, 15));
+		ok.setText("确  定");
+		ok.addActionListener(new cxbj_ok_actionAdapter(this));
+
+		this.getContentPane().add(jScrollPane1, null);
+		jScrollPane1.getViewport().add(jTable1, null);
+		this.getContentPane().add(ok, null);
+		this.setBounds(250,250,450,350);
+		this.setVisible(true);
+	}
+
+	void ok_actionPerformed(ActionEvent e) 
+	{
+		this.dispose();
+	}
+}
+
+class cxbj_ok_actionAdapter implements java.awt.event.ActionListener 
+{
+	cxbj adaptee;
+
+	cxbj_ok_actionAdapter(cxbj adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.ok_actionPerformed(e);
+	}
+}
