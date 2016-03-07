@@ -1,0 +1,75 @@
+package FileSystem;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+public class about extends JDialog 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	JPanel panel1 = new JPanel();
+	ImageIcon icon=new ImageIcon("xuan.jpg");//设置背景图片
+	JLabel jLabel1 = new JLabel(icon);
+	JButton sure = new JButton();
+
+	public about(Frame frame, String title, boolean modal) 
+	{
+		super(frame, title, true);
+		try 
+		{
+			jbInit();
+			pack();
+		}
+		catch(Exception ex) 
+		{
+			ex.printStackTrace();
+		}
+	}
+
+	public about()
+	{
+		this(null, "", true);
+	}
+	private void jbInit() throws Exception 
+	{
+	    jLabel1.setText("");
+	    jLabel1.setBounds(new Rectangle(5, 5, 392, 250));
+	    panel1.setBounds(new Rectangle(0, 299, 1, 1));
+	    panel1.setLayout(null);
+	    jLabel1.setText("");
+	    jLabel1.setBounds(new Rectangle(-43, 0, 414, 245));
+	    sure.setBounds(new Rectangle(109, 243, 79, 29));
+	    sure.setFont(new java.awt.Font("Dialog", 0, 15));
+	    sure.setText("确定");
+	    jLabel1.setToolTipText("leeyingzhang制作!");
+	    sure.addActionListener(new about_sure_actionAdapter(this));
+	    this.setTitle("使用说明！");
+	    this.getContentPane().add(panel1, null);
+	    this.getContentPane().add(sure, null);
+	    this.getContentPane().add(jLabel1, null);
+	    this.setBounds(200,200,330,310);
+	    this.getContentPane().setLayout(null);
+	    this.setVisible(true);
+	}
+
+	void sure_actionPerformed(ActionEvent e) 
+	{
+		this.dispose();
+	}
+}
+
+class about_sure_actionAdapter implements java.awt.event.ActionListener 
+{
+	about adaptee;
+
+	about_sure_actionAdapter(about adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.sure_actionPerformed(e);
+	}
+}
