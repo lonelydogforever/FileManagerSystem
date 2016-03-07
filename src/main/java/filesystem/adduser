@@ -1,0 +1,188 @@
+/*
+ *添加用户*/
+
+package FileSystem;
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class adduser extends JDialog 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Statement ps;
+	ResultSet rs;
+	Connection con;
+	String url;
+
+	JPanel panel1 = new JPanel();
+	JLabel jLabel1 = new JLabel();
+	JTextField userF = new JTextField();
+	JLabel jLabel2 = new JLabel();
+	JButton sure = new JButton();
+	JButton cancel = new JButton();
+	JLabel jLabel3 = new JLabel();
+	JPasswordField pwd = new JPasswordField();
+	JPasswordField pwd1 = new JPasswordField();
+	JComboBox power = new JComboBox();
+	JLabel jLabel4 = new JLabel();
+
+	public adduser(Frame frame, String title, boolean modal)
+	{
+		super(frame, title, modal);
+		try 
+		{
+			jbInit();
+			pack();
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+
+	public adduser() 
+	{
+		this(null, "", true);
+	}
+
+	private void jbInit() throws Exception
+	{
+	    panel1.setLayout(null);
+	    this.getContentPane().setLayout(null);
+	    panel1.setBounds(new Rectangle(10, 10, 452, 369));
+	    jLabel1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel1.setText("请输入用户名");
+	    jLabel1.setBounds(new Rectangle(2, 17, 101, 35));
+	    userF.setText("");
+	    userF.setBounds(new Rectangle(113, 19, 121, 31));
+	    jLabel2.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel2.setText("请 输 入 密 码");
+	    jLabel2.setBounds(new Rectangle(7, 69, 101, 35));
+	    sure.setBounds(new Rectangle(12, 204, 90, 35));
+	    sure.setFont(new java.awt.Font("Dialog", 0, 15));
+	    sure.setText("确  定");
+	    sure.addActionListener(new adduser_sure_actionAdapter(this));
+	    cancel.setBounds(new Rectangle(132, 204, 90, 38));
+	    cancel.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cancel.setText("取 消");
+	    cancel.addActionListener(new adduser_cancel_actionAdapter(this));
+	    this.setTitle("添加用户");
+	    jLabel3.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel3.setText("请再次输入密码");
+	    jLabel3.setBounds(new Rectangle(3, 109, 106, 35));
+	    pwd.setBounds(new Rectangle(114, 68, 120, 32));
+	    pwd1.setText("");
+	    pwd1.setBounds(new Rectangle(115, 108, 120, 32));
+	
+	    power.setBounds(new Rectangle(113, 155, 125, 29));
+	    jLabel4.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel4.setText("请选择权限");
+	    jLabel4.setBounds(new Rectangle(5, 156, 95, 34));
+	    getContentPane().add(panel1, null);
+	    panel1.add(jLabel1, null);
+	    panel1.add(sure, null);
+	    panel1.add(cancel, null);
+	    panel1.add(jLabel3, null);
+	    panel1.add(jLabel2, null);
+	    panel1.add(pwd, null);
+	    panel1.add(pwd1, null);
+	    panel1.add(userF, null);
+	    power.addItem("系统管理员");
+	    power.addItem("普通用户");
+	    panel1.add(power, null);
+	    panel1.add(jLabel4, null);
+	    //   power.addItem("系统管理员");
+	    //  power.addItem("普通用户");
+	    this.setBounds(300, 300, 300, 300);
+	    this.setVisible(true);
+	}
+
+	void cancel_actionPerformed(ActionEvent e) 
+	{
+		this.dispose();
+	}
+
+	void sure_actionPerformed(ActionEvent e) 
+	{
+
+		if (String.valueOf(pwd.getPassword()).trim() == String.valueOf(pwd1.getPassword()).trim())	// trim()从当前对象移除所有前导空白字符和尾部空白字符
+																									//name.getText()  换成 String.valueOf(name.getPassword())
+     	{
+			JOptionPane.showConfirmDialog(null,"确定添加？", "添加用户", JOptionPane.YES_NO_OPTION);
+			try 
+			{
+				try 
+				{
+					Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123456");
+
+					ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+				}
+				catch (Exception err) 
+				{
+					err.getMessage();
+					JOptionPane.showMessageDialog(null, "连接数据库错误!");
+				}
+				try 
+				{
+					ps.executeUpdate("Insert Into users Values('" +userF.getText().trim() +
+									 "','" + String.valueOf(pwd.getPassword()).trim() +"','"+
+									 power.getSelectedItem().toString() +"')");
+					ps.close();
+					//ps.executeUpdate("Insert Into yonghu  Values('" +user2+"','" +psw +"'");
+					JOptionPane.showMessageDialog(null, "添加成功");
+					this.dispose();
+				}
+
+				catch (SQLException sqle) 
+				{
+					String error = sqle.getMessage();
+					JOptionPane.showMessageDialog(null, error);
+					sqle.printStackTrace();
+				}
+
+			}
+			catch (Exception ex)
+			{
+				ex.getMessage();
+				String error = ex.getMessage();
+				JOptionPane.showMessageDialog(null, error);
+				ex.printStackTrace();
+			}
+     	}
+	}
+}
+
+class adduser_cancel_actionAdapter implements java.awt.event.ActionListener 
+{
+	adduser adaptee;
+
+	adduser_cancel_actionAdapter(adduser adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.cancel_actionPerformed(e);
+	}
+}
+
+class adduser_sure_actionAdapter implements java.awt.event.ActionListener 
+{
+	adduser adaptee;
+
+	adduser_sure_actionAdapter(adduser adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.sure_actionPerformed(e);
+	}
+}
