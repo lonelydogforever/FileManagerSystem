@@ -1,0 +1,579 @@
+package FileSystem;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class xgkcxx extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ResultSet rs;
+	Statement ps, ins,sc,gradecourse;
+	Connection con;
+	String bx = new String("必修");
+	String rx = new String("任选");
+	String xx = new String("限选");
+	JLabel jLabel1 = new JLabel();
+	JLabel jLabel2 = new JLabel();
+	JLabel jLabel3 = new JLabel();
+	JLabel jLabel4 = new JLabel();
+	JTextField kcbh = new JTextField();
+	JTextField mc = new JTextField();
+	JButton first = new JButton();
+	JLabel jLabel5 = new JLabel();
+	JButton next = new JButton();
+	JButton last = new JButton();
+	JButton previous = new JButton();
+	JButton xgjl = new JButton();
+	JButton gxsj = new JButton();
+	JButton scjl = new JButton();
+	JButton cencel = new JButton();
+	JLabel jLabel6 = new JLabel();
+	JScrollPane jScrollPane1 = new JScrollPane();
+	JTextPane kcms = new JTextPane();
+	JComboBox kclx = new JComboBox();
+
+	public xgkcxx() 
+	{
+		try 
+		{
+			jbInit();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}	
+		try 
+		{ 	//连接数据库
+			
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统;","sa", "123456");
+
+			ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			ins = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			sc= con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			gradecourse= con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			rs = ps.executeQuery("select * from course");
+			if (rs.next()) 
+			{
+				kcbh.setText(rs.getString("course_No"));
+				mc.setText(rs.getString("course_Name"));
+				// kclx.addItem(rs.getString("course_Type"));
+				if (rs.getString("course_Type").trim().equals(bx)) 
+				{
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+					kclx.addItem(xx);
+				}
+				if (rs.getString("course_Type").trim().equals(xx)) 
+				{
+					kclx.addItem(xx);
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+				}
+				else 
+				{
+					kclx.addItem(rx);
+					kclx.addItem(bx);
+					kclx.addItem(xx);
+				}
+				kcms.setText(rs.getString("course_Des"));
+			}
+
+		}
+		catch (Exception err)
+		{
+			err.printStackTrace(System.out);
+		}
+
+	}
+
+	public static void main(String[] args) 
+	{
+		new xgkcxx();
+	}
+
+	private void jbInit() throws Exception 
+	{
+	    jLabel1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel1.setText("课程编号");
+	    jLabel1.setBounds(new Rectangle(36, 33, 63, 38));
+	    this.getContentPane().setLayout(null);
+	    jLabel2.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel2.setText("课程类型");
+	    jLabel2.setBounds(new Rectangle(36, 81, 65, 39));
+	    jLabel3.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel3.setText("课程名称");
+	    jLabel3.setBounds(new Rectangle(240, 35, 64, 37));
+	    jLabel4.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel4.setText("课程描述");
+	    jLabel4.setBounds(new Rectangle(240, 87, 66, 35));
+	    kcbh.setText("");
+	    kcbh.setBounds(new Rectangle(101, 36, 120, 32));
+	    mc.setText("");
+	    mc.setBounds(new Rectangle(316, 39, 114, 33));
+	    first.setBounds(new Rectangle(31, 182, 83, 34));
+	    first.setFont(new java.awt.Font("Dialog", 0, 15));
+	    first.setText("第一条");
+	    first.addActionListener(new xgkcxx_first_actionAdapter(this));
+	    jLabel5.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel5.setText("查看课程信息");
+	    jLabel5.setBounds(new Rectangle(27, 135, 104, 36));
+	    next.setText("下一条");
+	    next.addActionListener(new xgkcxx_next_actionAdapter(this));
+	    next.setBounds(new Rectangle(230, 183, 83, 34));
+	    next.setFont(new java.awt.Font("Dialog", 0, 15));
+	    last.setText("最后一条");
+	    last.addActionListener(new xgkcxx_last_actionAdapter(this));
+	    last.setBounds(new Rectangle(324, 182, 99, 34));
+	    last.setFont(new java.awt.Font("Dialog", 0, 15));
+	    previous.setText("上一条");
+	    previous.addActionListener(new xgkcxx_previous_actionAdapter(this));
+	    previous.setBounds(new Rectangle(126, 182, 83, 34));
+	    previous.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xgjl.setText("修改数据");
+	    xgjl.addActionListener(new xgkcxx_xgjl_actionAdapter(this));
+	    xgjl.setBounds(new Rectangle(28, 274, 97, 34));
+	    xgjl.setFont(new java.awt.Font("Dialog", 0, 15));
+	    gxsj.setText("更新数据");
+	    gxsj.addActionListener(new xgkcxx_gxsj_actionAdapter(this));
+	    gxsj.setBounds(new Rectangle(138, 274, 101, 34));
+	    gxsj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    scjl.setText("删除记录");
+	    scjl.addActionListener(new xgkcxx_scjl_actionAdapter(this));
+	    scjl.setBounds(new Rectangle(251, 275, 98, 34));
+	    scjl.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cencel.setText("退  出");
+	    cencel.addActionListener(new xgkcxx_cencel_actionAdapter(this));
+	    cencel.setBounds(new Rectangle(353, 275, 83, 34));
+	    cencel.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel6.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel6.setText("修改课程信息");
+	    jLabel6.setBounds(new Rectangle(38, 231, 130, 41));
+	    this.setResizable(false);
+	    this.setTitle("修改班级信息");
+	    jScrollPane1.setBounds(new Rectangle(313, 90, 134, 84));
+	    kclx.setBounds(new Rectangle(100, 86, 124, 28));
+	    this.getContentPane().add(jLabel2, null);
+	    this.getContentPane().add(kcbh, null);
+	    this.getContentPane().add(jLabel3, null);
+	    this.getContentPane().add(mc, null);
+	    this.getContentPane().add(jLabel4, null);
+	    this.getContentPane().add(jLabel5, null);
+	    this.getContentPane().add(xgjl, null);
+	    this.getContentPane().add(gxsj, null);
+	    this.getContentPane().add(jLabel6, null);
+	    this.getContentPane().add(next, null);
+	    this.getContentPane().add(last, null);
+	    this.getContentPane().add(previous, null);
+	    this.getContentPane().add(cencel, null);
+	    this.getContentPane().add(scjl, null);
+	    this.getContentPane().add(jLabel1, null);
+	    this.getContentPane().add(jScrollPane1, null);
+	    this.getContentPane().add(first, null);
+	    this.getContentPane().add(kclx, null);
+	    jScrollPane1.getViewport().add(kcms, null);
+	    this.setBounds(200, 200, 500, 400);
+	    this.setVisible(true);
+	}
+
+	void xgjl_actionPerformed(ActionEvent e) 
+	{
+		JOptionPane.showConfirmDialog(null,"确定修改", "修改课程", JOptionPane.YES_NO_OPTION);
+		try 
+		{
+			ins.executeUpdate("Update course set course_Name='"+ mc.getText().trim() +
+                        	  "' ,course_Type='" + kclx.getSelectedItem().toString() +
+                        	  "' ,course_Des='" + kcms.getText().trim() +
+                        	  "'  where course_No='" + kcbh.getText().trim() + "'");
+			JOptionPane.showMessageDialog(null, "修改课程成功!");
+		}
+		catch (SQLException ex) 
+		{
+			String err = ex.getMessage();
+			JOptionPane.showMessageDialog(null, err);
+		}
+
+	}
+	
+	void first_actionPerformed(ActionEvent e)
+	{
+		kclx.removeAllItems();
+		try 
+		{
+			if (rs.first()) 
+			{
+				kcbh.setText(rs.getString("course_No"));
+				mc.setText(rs.getString("course_Name"));
+				//   kclx.addItem(rs.getString("course_Type"));
+				if (rs.getString("course_Type").trim().equals(bx)) 
+				{
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+					kclx.addItem(xx);
+				}
+				else if (rs.getString("course_Type").trim().equals(rx)) 
+				{
+					kclx.addItem(rx);
+					kclx.addItem(bx);
+					kclx.addItem(xx);
+				}
+				else 
+				{
+					kclx.addItem(xx);
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+				}
+				kcms.setText(rs.getString("course_Des"));
+			}
+
+		}
+		catch (SQLException ex) 
+		{
+			String err = ex.getMessage();
+			JOptionPane.showMessageDialog(null, err);
+		}
+	}
+
+	void last_actionPerformed(ActionEvent e) 
+	{
+		kclx.removeAllItems();
+		try 
+		{
+			if (rs.last()) 
+			{
+				kcbh.setText(rs.getString("course_No"));
+				mc.setText(rs.getString("course_Name"));
+				// kclx.addItem(rs.getString("course_Type"));
+				if (rs.getString("course_Type").trim().equals(bx)) 
+				{
+					kclx.addItem(bx);	//课程类型
+					kclx.addItem(rx);
+					kclx.addItem(xx);
+				}
+				else if (rs.getString("course_Type").trim().equals(rx)) 
+				{
+					kclx.addItem(rx);
+					kclx.addItem(bx);
+					kclx.addItem(xx);
+				}
+				else 
+				{
+					kclx.addItem(xx);
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+				}
+				kcms.setText(rs.getString("course_Des"));
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.getMessage();
+			JOptionPane.showMessageDialog(null, "这是最后一条记录！");
+		}
+	}
+
+	void previous_actionPerformed(ActionEvent e)
+	{
+		kclx.removeAllItems();
+		try 
+		{
+			if (rs.previous()) 
+			{
+				kcbh.setText(rs.getString("course_No"));
+				mc.setText(rs.getString("course_Name"));
+				//  kclx.addItem(rs.getString("course_Type"));
+				if (rs.getString("course_Type").trim().equals(bx))
+				{
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+					kclx.addItem(xx);
+				}
+				else if (rs.getString("course_Type").trim().equals(rx)) 
+				{
+					kclx.addItem(rx);
+					kclx.addItem(bx);
+					kclx.addItem(xx);
+				}
+				else 
+				{
+					kclx.addItem(xx);
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+				}
+
+				kcms.setText(rs.getString("course_Des"));
+			}
+			else 
+			{
+				JOptionPane.showMessageDialog(null, "这是第一条记录!");
+			}
+		}
+		catch (SQLException ex) 
+		{
+
+		}
+	}
+
+	void next_actionPerformed(ActionEvent e) 
+	{
+		kclx.removeAllItems();
+		try 
+		{
+			if (rs.next())
+			{
+				kcbh.setText(rs.getString("course_No"));
+				mc.setText(rs.getString("course_Name"));
+				//   kclx.addItem(rs.getString("course_Type"));
+				if (rs.getString("course_Type").trim().equals(bx)) 
+				{
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+					kclx.addItem(xx);
+				}
+				else if (rs.getString("course_Type").trim().equals(rx)) 
+				{
+					kclx.addItem(rx);
+					kclx.addItem(bx);
+					kclx.addItem(xx);
+				}
+				else 
+				{
+					kclx.addItem(xx);
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+				}
+
+				kcms.setText(rs.getString("course_Des"));
+			}
+			else 
+			{
+				JOptionPane.showMessageDialog(null, "这是最后一条记录!");
+			}
+		}
+		catch (SQLException ex) 
+		{
+		}
+
+	}
+
+	void gxsj_actionPerformed(ActionEvent e) 
+	{
+		try
+		{
+			rs = ps.executeQuery("select * from course");
+			if (rs.next()) 
+			{
+				kcbh.setText(rs.getString("course_No"));
+				mc.setText(rs.getString("course_Name"));
+				//  kclx.addItem(rs.getString("course_Type"));
+				if (rs.getString("course_Type").trim().equals(bx)) 
+				{
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+					kclx.addItem(xx);
+				}
+				else if (rs.getString("course_Type").trim().equals(rx)) 
+				{
+					kclx.addItem(rx);
+					kclx.addItem(bx);
+					kclx.addItem(xx);
+				}
+				else 	
+				{
+					kclx.addItem(xx);
+					kclx.addItem(bx);
+					kclx.addItem(rx);
+				}
+
+				kcms.setText(rs.getString("course_Des"));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			String err = ex.getMessage();
+			JOptionPane.showMessageDialog(null, err);
+		}
+	}
+
+	void scjl_actionPerformed(ActionEvent e) 
+	{
+		JOptionPane.showConfirmDialog(null,"确定删除？", "删除课程", JOptionPane.YES_NO_OPTION);
+		try 
+		{
+			sc.executeUpdate("delete from result where 'course_Name'=(select course_Name from course where course_No='" +kcbh.getText() +"');");
+			System.out.println("here");
+			ins.executeUpdate("delete from course where course_No='" +kcbh.getText() +"'");
+
+			JOptionPane.showMessageDialog(null, "删除成功!");
+			try 
+			{
+				rs = ps.executeQuery("select * from course");
+				if (rs.next()) {
+	                kcbh.setText(rs.getString("course_No"));
+	                mc.setText(rs.getString("course_Name"));
+	                //  kclx.addItem(rs.getString("course_Type"));
+	                if (rs.getString("course_Type").trim().equals(bx)) 
+	                {
+	                	kclx.addItem(bx);
+	                	kclx.addItem(rx);
+	                	kclx.addItem(xx);
+	                }
+	                else if (rs.getString("course_Type").trim().equals(rx)) 
+	                {
+	                	kclx.addItem(rx);
+	                	kclx.addItem(bx);
+	                	kclx.addItem(xx);
+	                }
+	                else 
+	                {
+	                	kclx.addItem(xx);
+	                	kclx.addItem(bx);
+	                	kclx.addItem(rx);
+	                }
+	
+	                kcms.setText(rs.getString("course_Des"));
+				}
+            }
+            catch (SQLException ex) 
+            {
+            	String err = ex.getMessage();
+            	JOptionPane.showMessageDialog(null, err);
+            }
+		}
+		catch (SQLException ex) 
+		{
+			String err = ex.getMessage();
+			JOptionPane.showMessageDialog(null, err);
+		}
+	}
+
+	void cencel_actionPerformed(ActionEvent e) 
+	{
+		this.dispose();
+	}
+}
+
+class xgkcxx_xgjl_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgkcxx adaptee;
+
+	xgkcxx_xgjl_actionAdapter(xgkcxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.xgjl_actionPerformed(e);
+	}
+}
+
+class xgkcxx_first_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgkcxx adaptee;
+
+	xgkcxx_first_actionAdapter(xgkcxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.first_actionPerformed(e);
+	}
+}
+
+class xgkcxx_previous_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgkcxx adaptee;
+
+	xgkcxx_previous_actionAdapter(xgkcxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.previous_actionPerformed(e);
+	}
+}
+
+class xgkcxx_next_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgkcxx adaptee;
+
+	xgkcxx_next_actionAdapter(xgkcxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.next_actionPerformed(e);
+	}
+}
+
+class xgkcxx_last_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgkcxx adaptee;
+
+	xgkcxx_last_actionAdapter(xgkcxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.last_actionPerformed(e);
+	}
+}
+
+class xgkcxx_gxsj_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgkcxx adaptee;
+
+	xgkcxx_gxsj_actionAdapter(xgkcxx adaptee)
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.gxsj_actionPerformed(e);
+	}
+}
+
+class xgkcxx_scjl_actionAdapter  implements java.awt.event.ActionListener 
+{
+	xgkcxx adaptee;
+
+	xgkcxx_scjl_actionAdapter(xgkcxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.scjl_actionPerformed(e);
+	}
+}
+
+class xgkcxx_cencel_actionAdapter implements java.awt.event.ActionListener
+{
+	xgkcxx adaptee;
+
+	xgkcxx_cencel_actionAdapter(xgkcxx adaptee)
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.cencel_actionPerformed(e);
+	}
+}
