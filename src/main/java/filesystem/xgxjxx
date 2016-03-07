@@ -1,0 +1,565 @@
+/*
+ * 修改学籍信息*/
+package FileSystem;
+import javax.swing.*;
+import java.awt.*;
+import java.sql.*;
+import java.awt.event.*;
+
+public class xgxjxx extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Statement ps, up,sc;
+	ResultSet rs;
+	Connection con;
+	String url;
+	JLabel jLabel1 = new JLabel();
+	JTextField xh = new JTextField();
+	JLabel jLabel2 = new JLabel();
+	JLabel jLabel3 = new JLabel();
+	JLabel jLabel4 = new JLabel();
+	JLabel jLabel5 = new JLabel();
+	JLabel jLabel6 = new JLabel();
+	JLabel jLabel7 = new JLabel();
+	JLabel jLabel8 = new JLabel();
+	JLabel jLabel9 = new JLabel();
+	JTextField xm = new JTextField();
+	JTextField rxrq = new JTextField();
+	JTextField rq = new JTextField();
+	JTextField tel = new JTextField();
+	JScrollPane jScrollPane1 = new JScrollPane();
+	JTextPane address = new JTextPane();
+	JScrollPane jScrollPane2 = new JScrollPane();
+	JTextPane comment = new JTextPane();
+	JLabel jLabel10 = new JLabel();
+	JButton previous = new JButton();
+	JButton next = new JButton();
+	JButton last = new JButton();
+	JButton first = new JButton();
+	JButton xgxl = new JButton();
+	JButton gxjl = new JButton();
+	JButton cancel = new JButton();
+	JButton delete = new JButton();
+	JLabel jLabel11 = new JLabel();
+	JTextField sex = new JTextField();
+	JComboBox jComboBox1 = new JComboBox();
+	JComboBox jComboBox2 = new JComboBox();
+	JComboBox bh = new JComboBox();	
+	public xgxjxx() 
+	{
+		try 
+		{
+			jbInit();
+		}
+		catch (Exception e) 
+		{
+		    e.printStackTrace();
+		}
+
+		try 
+		{
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123456");
+			ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			sc=con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+		}
+		catch (Exception err) 
+		{		
+		    JOptionPane.showMessageDialog(null, err.getMessage());
+		}
+		try 
+		{
+			rs = ps.executeQuery("select * from student"); //读取数据库
+			if (rs.next()) 
+			{
+				xh.setText(rs.getString("student_ID"));
+				xm.setText(rs.getString("student_Name"));
+		        sex.setText(rs.getString("student_Sex"));
+		        rq.setText(rs.getString("born_Date").substring(0, 10));
+		        bh.addItem(rs.getString("class_NO"));
+		        tel.setText(rs.getString("tele_Number"));
+		        rxrq.setText(rs.getString("ru_Date").substring(0, 10));
+		        address.setText(rs.getString("address"));
+		        comment.setText(rs.getString("comment"));
+			}
+		}
+		catch (SQLException sqle) 
+		{
+		    JOptionPane.showMessageDialog(null, sqle.getMessage());
+		    sqle.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) 
+	{
+		new xgxjxx();
+	}
+
+	private void jbInit() throws Exception 
+	{
+	    this.setForeground(Color.black);
+	    this.setResizable(false);
+	    this.setState(Frame.NORMAL);
+	    this.setTitle("修改学籍信息");
+	    this.getContentPane().setLayout(null);
+	    xh.setBackground(Color.white);
+	    xh.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xh.setEditable(false);
+	    xh.setText("");
+	    jLabel1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel1.setText("学    号");
+	    jLabel1.setBounds(new Rectangle(26, 34, 58, 44));
+	    xh.setBounds(new Rectangle(90, 39, 143, 30));
+	    jLabel2.setBounds(new Rectangle(26, 78, 58, 44));
+	    jLabel2.setText("性   别");
+	    jLabel2.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel3.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel3.setText("班   号");
+	    jLabel3.setBounds(new Rectangle(26, 125, 58, 44));
+	    jLabel4.setBounds(new Rectangle(16, 164, 65, 44));
+	    jLabel4.setText("入校日期");
+	    jLabel4.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel5.setBounds(new Rectangle(31, 215, 58, 44));
+	    jLabel5.setText("备  注");
+	    jLabel5.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel6.setBounds(new Rectangle(264, 33, 58, 44));
+	    jLabel6.setText("姓    名");
+	    jLabel6.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel7.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel7.setText("出生日期");
+	    jLabel7.setBounds(new Rectangle(256, 78, 65, 44));
+	    jLabel8.setBounds(new Rectangle(262, 125, 65, 44));
+	    jLabel8.setText("联系电话");
+	    jLabel8.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel9.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel9.setText("家庭住址");
+	    jLabel9.setBounds(new Rectangle(256, 165, 65, 44));
+	    //sex.addItem("男");
+	    // sex.addItem("女");
+	    xm.setBounds(new Rectangle(347, 38, 126, 30));
+	    xm.setText("");
+	    xm.setFont(new java.awt.Font("Dialog", 0, 15));
+	    rxrq.setBounds(new Rectangle(89, 173, 153, 30));
+	    rxrq.setText("");
+	    rxrq.setFont(new java.awt.Font("Dialog", 0, 15));
+	    rq.setBounds(new Rectangle(348, 86, 126, 30));
+	    rq.setText("");
+	    rq.setFont(new java.awt.Font("Dialog", 0, 15));
+	    tel.setBounds(new Rectangle(351, 130, 126, 30));
+	
+	    tel.setText("");
+	    tel.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jScrollPane1.setBounds(new Rectangle(329, 185, 152, 131));
+	    address.setFont(new java.awt.Font("Dialog", 0, 15));
+	    address.setText("");
+	    jScrollPane2.setBounds(new Rectangle(85, 217, 161, 118));
+	    comment.setFont(new java.awt.Font("Dialog", 0, 15));
+	    comment.setText("");
+	    jLabel10.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel10.setText("查看学籍信息");
+	    jLabel10.setBounds(new Rectangle(22, 343, 97, 33));
+	    previous.setText("<");
+	    previous.addActionListener(new xgxjxx_previous_actionAdapter(this));
+	    previous.setBounds(new Rectangle(147, 378, 111, 33));
+	    previous.setFont(new java.awt.Font("Dialog", 0, 15));
+	    next.setFont(new java.awt.Font("Dialog", 0, 15));
+	    next.setBounds(new Rectangle(264, 378, 111, 33));
+	    next.setText(">");
+	    next.addActionListener(new xgxjxx_next_actionAdapter(this));
+	    last.setFont(new java.awt.Font("Dialog", 0, 15));
+	    last.setBounds(new Rectangle(384, 378, 131, 33));
+	    last.setText(">>");
+	    last.addActionListener(new xgxjxx_last_actionAdapter(this));
+	    first.setFont(new java.awt.Font("Dialog", 0, 15));
+	    first.setBounds(new Rectangle(26, 378, 111, 33));
+	    first.setText("<<");
+	    first.addActionListener(new xgxjxx_first_actionAdapter(this));
+	    xgxl.setBounds(new Rectangle(34, 452, 96, 37));
+	    xgxl.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xgxl.setText("修改记录");
+	    xgxl.addActionListener(new xgxjxx_xgxl_actionAdapter(this));
+	    gxjl.setText("更新记录");
+	    gxjl.addActionListener(new xgxjxx_gxjl_actionAdapter(this));
+	    gxjl.setFont(new java.awt.Font("Dialog", 0, 15));
+	    gxjl.setBounds(new Rectangle(143, 452, 96, 37));
+	    cancel.setBounds(new Rectangle(377, 453, 96, 38));
+	    cancel.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cancel.setText("退   出");
+	    cancel.addActionListener(new xgxjxx_cancel_actionAdapter(this));
+	    delete.setText("删除记录");
+	    delete.addActionListener(new xgxjxx_delete_actionAdapter(this));
+	    delete.setFont(new java.awt.Font("Dialog", 0, 15));
+	    delete.setBounds(new Rectangle(263, 452, 96, 38));
+	    jLabel11.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel11.setText("修改学籍信息");
+	    jLabel11.setBounds(new Rectangle(26, 416, 101, 37));
+	    sex.setBounds(new Rectangle(90, 84, 143, 30));
+	    sex.setText("");
+	    sex.setFont(new java.awt.Font("Dialog", 0, 15));
+	
+	    bh.setFont(new java.awt.Font("Dialog", 0, 15));
+	    bh.setBounds(new Rectangle(89, 125, 150, 35));
+	    this.getContentPane().add(jLabel1, null);
+	    this.getContentPane().add(xh, null);
+	    this.getContentPane().add(jLabel3, null);
+	    this.getContentPane().add(jLabel2, null);
+	    this.getContentPane().add(jLabel5, null);
+	    this.getContentPane().add(jLabel4, null);
+	    this.getContentPane().add(rxrq, null);
+	    this.getContentPane().add(jScrollPane1, null);
+	    jScrollPane1.getViewport().add(address, null);
+	    this.getContentPane().add(jScrollPane2, null);
+	    jScrollPane2.getViewport().add(comment, null);
+	    this.getContentPane().add(tel, null);
+	    this.getContentPane().add(rq, null);
+	    this.getContentPane().add(xm, null);
+	    this.getContentPane().add(jLabel7, null);
+	    this.getContentPane().add(jLabel6, null);
+	    this.getContentPane().add(jLabel8, null);
+	    this.getContentPane().add(jLabel9, null);
+	    this.getContentPane().add(jLabel10, null);
+	    this.getContentPane().add(previous, null);
+	    this.getContentPane().add(next, null);
+	    this.getContentPane().add(last, null);
+	    this.getContentPane().add(first, null);
+	    this.getContentPane().add(xgxl, null);
+	    this.getContentPane().add(gxjl, null);
+	    this.getContentPane().add(jLabel11, null);
+	    this.getContentPane().add(sex, null);
+	    this.getContentPane().add(delete, null);
+	    this.getContentPane().add(cancel, null);
+	    this.getContentPane().add(bh, null);
+	    this.getContentPane().add(bh, null);
+	    this.getContentPane().add(bh, null);
+	    this.setBounds(200, 150, 550, 550);
+	    this.setVisible(true);
+	}
+
+	void first_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			if (rs.first()) 
+			{
+		        xh.setText(rs.getString("student_ID"));
+		        xm.setText(rs.getString("student_Name"));
+		        sex.setText(rs.getString("student_Sex"));
+		        rq.setText(rs.getString("born_Date").substring(0, 10));
+		        bh.addItem(rs.getString("class_NO"));
+		        tel.setText(rs.getString("tele_Number"));
+		        rxrq.setText(rs.getString("ru_Date").substring(0, 10));
+		        address.setText(rs.getString("address"));
+		        comment.setText(rs.getString("comment"));
+			}
+			else
+				JOptionPane.showMessageDialog(null, "这是第一条记录");
+		}
+		catch (SQLException sqle) 
+		{
+		  	JOptionPane.showMessageDialog(null, sqle.getMessage());
+		   	sqle.printStackTrace();
+		}
+  }
+
+	void next_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			if (rs.next()) 
+			{
+		        xh.setText(rs.getString("student_ID"));
+		        xm.setText(rs.getString("student_Name"));
+		        sex.setText(rs.getString("student_Sex"));
+		        rq.setText(rs.getString("born_Date").substring(0, 10));
+		        bh.addItem(rs.getString("class_NO"));
+		        tel.setText(rs.getString("tele_Number"));
+		        rxrq.setText(rs.getString("ru_Date").substring(0, 10));
+		        address.setText(rs.getString("address"));
+		        comment.setText(rs.getString("comment"));
+			}
+			else
+				JOptionPane.showMessageDialog(null, "这是最后一条记录");
+		}
+		catch (SQLException sqle) 
+		{
+			JOptionPane.showMessageDialog(null, sqle.getMessage());
+		   	sqle.printStackTrace();
+		}
+	}
+	void previous_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			if (rs.previous()) 
+			{
+		        xh.setText(rs.getString("student_ID"));
+		        xm.setText(rs.getString("student_Name"));
+		        sex.setText(rs.getString("student_Sex"));
+		        rq.setText(rs.getString("born_Date").substring(0, 10));
+		        bh.addItem(rs.getString("class_NO"));
+		        tel.setText(rs.getString("tele_Number"));
+		        rxrq.setText(rs.getString("ru_Date").substring(0, 10));
+		        address.setText(rs.getString("address"));
+		        comment.setText(rs.getString("comment"));
+			}
+			else
+				JOptionPane.showMessageDialog(null, "这是第一条记录");
+		}
+
+		catch (SQLException sqle) 
+		{
+			JOptionPane.showMessageDialog(null, sqle.getMessage());
+		   	sqle.printStackTrace();
+		}
+	}
+	void last_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			if (rs.last()) 
+			{
+		        xh.setText(rs.getString("student_ID"));	//学号
+		        xm.setText(rs.getString("student_Name"));	//姓名
+		        sex.setText(rs.getString("student_Sex"));	//性别
+		        rq.setText(rs.getString("born_Date").substring(0, 10));	//出生日期
+		        bh.addItem(rs.getString("class_NO"));	//班级编号
+		        tel.setText(rs.getString("tele_Number"));	//电话号码
+		        rxrq.setText(rs.getString("ru_Date").substring(0, 10));	//入学日期
+		        address.setText(rs.getString("address"));	//住址
+		        comment.setText(rs.getString("comment"));	//注释
+			}
+			else
+				JOptionPane.showMessageDialog(null, "这是最后一条记录");
+		}
+		catch (SQLException sqle) 
+		{
+			JOptionPane.showMessageDialog(null, sqle.getMessage());
+		   	sqle.printStackTrace();
+		}
+	}
+	void gxjl_actionPerformed(ActionEvent e) 	//更新学籍记录
+	{
+		try 
+		{
+			rs = ps.executeQuery("select * from student"); //读取数据库
+			if (rs.next()) 
+			{
+		        xh.setText(rs.getString("student_ID"));
+		        xm.setText(rs.getString("student_Name"));
+		        sex.setText(rs.getString("student_Sex"));
+		        rq.setText(rs.getString("born_Date").substring(0, 10));
+		        bh.addItem(rs.getString("class_NO"));
+		        tel.setText(rs.getString("tele_Number"));
+		        rxrq.setText(rs.getString("ru_Date").substring(0, 10));
+		        address.setText(rs.getString("address"));
+		        comment.setText(rs.getString("comment"));
+			}
+		}
+		catch (SQLException sqle) 
+		{
+			JOptionPane.showMessageDialog(null, sqle.getMessage());
+		   	sqle.printStackTrace();
+		}
+	}
+
+	void xgxl_actionPerformed(ActionEvent e) 
+	{
+		JOptionPane.showConfirmDialog(null,"确定修改", "修改学籍", JOptionPane.YES_NO_OPTION);
+		try 
+		{
+			ps.executeUpdate("update student set student_Name='" + xm.getText().trim() +
+							 "',student_Sex='" + sex.getText().trim() + "',born_Date='" + 
+							 rq.getText().trim() + "',class_NO='" + bh.getSelectedItem()+ "',tele_Number='" + 
+							 tel.getText().trim() + "',ru_Date='" + rxrq.getText().trim() + "',address='" +
+							 address.getText().trim() + "',comment='" + comment.getText().trim() + 
+							 "'where student_ID='" + xh.getText().trim() + "'");
+			JOptionPane.showMessageDialog(null, "修改学籍成功");
+			//this.dispose();
+		}
+
+		catch (SQLException sqle) 
+		{
+			JOptionPane.showMessageDialog(null, sqle.getMessage());
+		   	sqle.printStackTrace();
+		}
+	}
+	void delete_actionPerformed(ActionEvent e) 
+	{
+		int v=JOptionPane.showConfirmDialog(this,"确定删除吗？将删除所有此学生信息","用户确认", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        if(v==JOptionPane.OK_OPTION)
+        {
+        	try 
+        	{
+        		ps.executeUpdate("delete from student where student_ID='" +xh.getText().trim() +"'");
+        		ps.executeUpdate("delete from result where student_ID='" +xh.getText().trim() +"'");
+        		JOptionPane.showMessageDialog(null, "删除学籍成功");
+        		//this.dispose();
+        	}
+        	catch (SQLException sqle) 
+        	{
+        		JOptionPane.showMessageDialog(null, sqle.getMessage());
+    		   	sqle.printStackTrace();
+        	}
+        }
+        try 
+        {
+        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        	Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123");
+        	ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+        }
+        catch (Exception err) 
+        {  
+        	JOptionPane.showMessageDialog(null, err.getMessage());
+        }
+        try 
+        {
+        	rs = ps.executeQuery("select * from student"); //读取数据库
+        	if (rs.next()) 
+        	{
+        		xh.setText(rs.getString("student_ID"));
+        		xm.setText(rs.getString("student_Name"));
+        		sex.setText(rs.getString("student_Sex"));
+        		rq.setText(rs.getString("born_Date").substring(0, 10));
+        		bh.addItem(rs.getString("class_NO"));
+        		tel.setText(rs.getString("tele_Number"));
+        		rxrq.setText(rs.getString("ru_Date").substring(0, 10));
+        		address.setText(rs.getString("address"));
+        		comment.setText(rs.getString("comment"));
+        	}
+        }
+
+        catch (SQLException sqle) 
+        {
+        	JOptionPane.showMessageDialog(null, sqle.getMessage());
+		   	sqle.printStackTrace();
+        }
+	}
+	void cancel_actionPerformed(ActionEvent e) 
+	{
+		this.dispose();
+	}
+
+	void bh_actionPerformed(ActionEvent e) 
+	{
+	}
+
+}
+
+class xgxjxx_first_actionAdapter  implements java.awt.event.ActionListener 
+{
+	xgxjxx adaptee;
+	xgxjxx_first_actionAdapter(xgxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.first_actionPerformed(e);
+  	}
+}
+
+class xgxjxx_next_actionAdapter  implements java.awt.event.ActionListener 
+{
+	xgxjxx adaptee;
+	xgxjxx_next_actionAdapter(xgxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.next_actionPerformed(e);
+	}
+}
+
+class xgxjxx_previous_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgxjxx adaptee;
+	xgxjxx_previous_actionAdapter(xgxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.previous_actionPerformed(e);
+	}
+}
+
+class xgxjxx_last_actionAdapter  implements java.awt.event.ActionListener 
+{
+	xgxjxx adaptee;
+	xgxjxx_last_actionAdapter(xgxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.last_actionPerformed(e);
+	}
+}
+
+class xgxjxx_gxjl_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgxjxx adaptee;
+	xgxjxx_gxjl_actionAdapter(xgxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.gxjl_actionPerformed(e);
+	}
+}
+class xgxjxx_xgxl_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgxjxx adaptee;
+	xgxjxx_xgxl_actionAdapter(xgxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.xgxl_actionPerformed(e);
+	}
+}
+
+class xgxjxx_delete_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgxjxx adaptee;
+	xgxjxx_delete_actionAdapter(xgxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.delete_actionPerformed(e);
+	}
+}
+class xgxjxx_cancel_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgxjxx adaptee;
+	xgxjxx_cancel_actionAdapter(xgxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.cancel_actionPerformed(e);
+	}
+}
+class xgxjxx_bh_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgxjxx adaptee;
+	xgxjxx_bh_actionAdapter(xgxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.bh_actionPerformed(e);
+	}
+}
