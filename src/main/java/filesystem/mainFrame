@@ -1,0 +1,857 @@
+package FileSystem;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+//import javax.swing.UIManager;
+import java.sql.*;
+import java.io.FileInputStream;
+import sun.audio.AudioStream;
+import sun.audio.*;
+import java.io.*;
+
+public class mainFrame extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	JPanel contentPane;
+	String user1;
+	int power;
+	Statement ps;
+	ResultSet rs;
+	Connection con;
+	String url;
+	String username;
+
+	JMenuBar jMenuBar1 = new JMenuBar();
+	JMenu jMenuFile = new JMenu();
+	JMenu jMenuHelp = new JMenu();
+	JMenuItem jMenuHelpAbout = new JMenuItem();
+	JMenuItem adduser = new JMenuItem();
+  	JMenu xjgl = new JMenu();
+  	JMenuItem cxxjxx = new JMenuItem();
+  	JMenuItem xgxj = new JMenuItem();
+  	JMenuItem tjxj = new JMenuItem();
+  	JMenu bjgl = new JMenu();
+  	JMenuItem xgbj = new JMenuItem();
+  	JMenuItem tjbj = new JMenuItem();
+  	JMenu kcsz = new JMenu();		//课程设置
+  	JMenuItem sznj = new JMenuItem();
+  	JMenuItem xgkc = new JMenuItem();
+  	JMenuItem tjkc = new JMenuItem();
+  	JMenu cjgl = new JMenu();
+  	JMenuItem tjcj = new JMenuItem();
+  	ImageIcon icon = new ImageIcon("images" + File.separator+"a.jpg");
+  	JLabel jLabel1 = new JLabel(icon, JLabel.CENTER);
+  	JMenuItem xgcj = new JMenuItem();
+  	JMenuItem cxcj = new JMenuItem();
+  	JMenuItem exit = new JMenuItem();
+  	JMenuItem jMenuItem1 = new JMenuItem();
+  	JMenuItem llyh = new JMenuItem();
+  	JMenuItem login = new JMenuItem();
+  	JMenu ghbj = new JMenu();
+  	JMenuItem jMenuItem2 = new JMenuItem();
+  	JMenuItem jMenuItem3 = new JMenuItem();
+  	JMenuItem jMenuItem4 = new JMenuItem();
+  	JMenuItem jMenuItem5 = new JMenuItem();
+  	FileInputStream fileau;// = new FileInputStream("lzlh.mid");
+  	AudioStream as;
+  	JMenu jMenu1 = new JMenu();
+  	JMenuItem jMenuItem6 = new JMenuItem();
+  	JMenuItem jMenuItem7 = new JMenuItem();
+
+  	public mainFrame() 
+  	{
+  		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
+
+  		try 
+  		{
+
+  			jbInit();
+  		}
+  		catch (Exception e) 
+  		{
+  			e.printStackTrace();
+  		}
+  	}
+
+  	//Component initialization
+  	private void jbInit() throws Exception 
+  	{
+  		contentPane = (JPanel)this.getContentPane();
+  		contentPane.setLayout(null);
+  		//this.setSize(new Dimension(800, 600));
+
+  		this.setResizable(false);
+  		this.setTitle("档案管理系统");
+  		jMenuFile.setFont(new java.awt.Font("Dialog", 0, 15));	//JLabel.setFont(new Font("字体名字",字体样式,字体大小))
+  		jMenuFile.setForeground(Color.black);
+  		jMenuFile.setText("  系统登录  ");
+  		jMenuHelp.setFont(new java.awt.Font("Dialog", 0, 15));
+  		jMenuHelp.setText("	     帮助    ");
+  		jMenuHelpAbout.setFont(new java.awt.Font("Dialog", 0, 15));
+  		jMenuHelpAbout.setText("    关于   ");
+  		jMenuHelpAbout.addActionListener(new mainFrame_jMenuHelpAbout_ActionAdapter(this));
+  		adduser.setFont(new java.awt.Font("Dialog", 0, 15));
+  		adduser.setText(" 添加用户 ");
+  		adduser.addActionListener(new mainFrame_adduser_actionAdapter(this));
+  		xjgl.setFont(new java.awt.Font("Dialog", 0, 15));
+  		xjgl.setText("     学籍管理     ");
+  		xjgl.addActionListener(new mainFrame_xjgl_actionAdapter(this));
+  		bjgl.setFont(new java.awt.Font("Dialog", 0, 15));
+  		bjgl.setText("     班级管理     ");
+  		kcsz.setFont(new java.awt.Font("Dialog", 0, 15));
+  		kcsz.setText("     课程设置     ");
+  		cjgl.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cjgl.setText("     成绩管理     ");
+	    tjcj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    tjcj.setText("添加成绩信息");
+	    tjcj.addActionListener(new mainFrame_tjcj_actionAdapter(this));
+	    tjxj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    tjxj.setForeground(Color.black);
+	    tjxj.setText("添加学籍信息");
+	    tjxj.addActionListener(new mainFrame_tjxj_actionAdapter(this));
+	    // jMenuItem9.addActionListener(new mainFrame_jMenuItem9_actionAdapter(this));
+	    xgxj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xgxj.setText("修改学籍信息");
+	    xgxj.addActionListener(new mainFrame_xgxj_actionAdapter(this));
+	    cxxjxx.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cxxjxx.setText("查询学籍信息");
+	    cxxjxx.addActionListener(new mainFrame_cxxjxx_actionAdapter(this));
+	    // jMenuItem3.addActionListener(new mainFrame_jMenuItem3_actionAdapter(this));
+	    tjbj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    tjbj.setText("添加班级信息");
+	    tjbj.addActionListener(new mainFrame_tjbj_actionAdapter(this));
+	    xgbj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xgbj.setText("修改班级信息");
+	    xgbj.addActionListener(new mainFrame_xgbj_actionAdapter(this));
+	    tjkc.setFont(new java.awt.Font("Dialog", 0, 15));
+	    tjkc.setText("添加课程信息");
+	    tjkc.addActionListener(new mainFrame_tjkc_actionAdapter(this));
+	    xgkc.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xgkc.setText("修改课程信息");
+	    xgkc.addActionListener(new mainFrame_xgkc_actionAdapter(this));
+	    sznj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    sznj.setText("设置年级课程");
+	    sznj.addActionListener(new mainFrame_sznj_actionAdapter(this));
+	    jLabel1.setText("");
+	    jLabel1.setBounds(new Rectangle(1, 0, 800, 603));
+	    xgcj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xgcj.setText("修改成绩信息");
+	    xgcj.addActionListener(new mainFrame_xgcj_actionAdapter(this));
+	    cxcj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cxcj.setText("查询成绩信息");
+	    cxcj.addActionListener(new mainFrame_cxcj_actionAdapter(this));
+	    exit.setFont(new java.awt.Font("Dialog", 0, 15));
+	    exit.setText("  退    出  ");
+	    exit.addActionListener(new mainFrame_exit_actionAdapter(this));
+	    exit.addMouseListener(new mainFrame_exit_mouseAdapter(this));
+	    jMenuItem1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jMenuItem1.setText(" 修该密码 ");
+	    jMenuItem1.addActionListener(new mainFrame_jMenuItem1_actionAdapter(this));
+	    llyh.setFont(new java.awt.Font("Dialog", 0, 15));
+	    llyh.setText(" 浏览用户 ");
+	    llyh.addActionListener(new mainFrame_llyh_actionAdapter(this));
+	    login.setFont(new java.awt.Font("Dialog", 0, 15));
+	    login.setText(" 用户登录 ");
+	    login.addActionListener(new mainFrame_login_actionAdapter(this));
+	    ghbj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    ghbj.setText(" 校园风景 ");
+	    jMenuItem4.setFont(new java.awt.Font("SansSerif", 0, 15));
+	    jMenuItem4.setHorizontalAlignment(SwingConstants.LEFT);
+	    jMenuItem4.setHorizontalTextPosition(SwingConstants.LEFT);
+	    jMenuItem4.setText("    森林   ");
+	    jMenuItem4.addActionListener(new mainFrame_jMenuItem4_actionAdapter(this));
+	    jMenuItem3.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jMenuItem3.setText("    红叶   ");
+	    jMenuItem3.addActionListener(new mainFrame_jMenuItem3_actionAdapter(this));
+	    jMenuItem2.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jMenuItem2.setText("    南山   ");
+	    jMenuItem2.addActionListener(new mainFrame_jMenuItem2_actionAdapter(this));
+	    jMenuItem5.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jMenuItem5.setText("    水晶   ");
+	    jMenuItem5.addActionListener(new mainFrame_jMenuItem5_actionAdapter(this));
+	    jMenu1.addActionListener(new mainFrame_jMenu1_actionAdapter(this));
+	    jMenu1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jMenu1.setText("  背景音乐  ");
+	    jMenuItem7.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jMenuItem7.setText("     打开    ");
+	    jMenuItem7.addActionListener(new mainFrame_jMenuItem7_actionAdapter(this));
+	    jMenuItem6.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jMenuItem6.setText("     关闭    ");
+	    jMenuItem6.addActionListener(new mainFrame_jMenuItem6_actionAdapter(this));
+	    jMenuFile.add(login);
+	    jMenuFile.add(llyh);
+	    jMenuFile.add(jMenuItem1);
+	    jMenuFile.add(adduser);
+	    jMenuFile.add(exit);
+	    jMenuHelp.add(jMenuHelpAbout);
+	    jMenuBar1.add(jMenuFile);
+	    jMenuBar1.add(xjgl);
+	    jMenuBar1.add(bjgl);
+	    jMenuBar1.add(kcsz);
+	    jMenuBar1.add(cjgl);
+	    jMenuBar1.add(ghbj);
+	    jMenuBar1.add(jMenu1);
+	    jMenuBar1.add(jMenuHelp);
+	
+	    xjgl.add(tjxj);
+	    xjgl.add(xgxj);
+	    xjgl.add(cxxjxx);
+	    bjgl.add(tjbj);
+	    bjgl.add(xgbj);
+	    kcsz.add(tjkc);
+	    kcsz.add(xgkc);
+	    kcsz.add(sznj);
+	    cjgl.add(tjcj);
+	    cjgl.add(xgcj);
+	    cjgl.add(cxcj);
+	    contentPane.add(jLabel1, null);
+	    ghbj.add(jMenuItem4);
+	    ghbj.add(jMenuItem3);
+	    ghbj.add(jMenuItem2);
+	    ghbj.add(jMenuItem5);
+	    jMenu1.add(jMenuItem7);
+	    jMenu1.add(jMenuItem6);
+	    this.setJMenuBar(jMenuBar1);
+	
+	    xjgl.setEnabled(false);
+	    bjgl.setEnabled(false);
+	    kcsz.setEnabled(false);
+	    cjgl.setEnabled(false);
+	    jMenuFile.setEnabled(true);
+	    llyh.setEnabled(false);
+	    adduser.setEnabled(false);
+	    jMenuItem7.setEnabled(false);
+	
+	    this.setBounds(250, 100, 800, 600);	//修改窗体位置
+	    this.setVisible(true);					
+	    try
+	    {
+	    	AudioPlayer.player.start(as);
+	        //System.out.println("添加音乐成功");
+	    }
+	    catch (Exception e1) 
+	    {
+	    	e1.printStackTrace();
+	    }
+	}
+	public static void main(String args[]) 
+	{
+  	    new mainFrame();
+//		try 
+//		{	//windows风格
+//			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+//		} 
+//		catch (Exception e) 
+//		{
+//			e.printStackTrace();
+//		}
+	}
+
+  	public void jMenuFileExit_actionPerformed(ActionEvent e) 
+  	{
+  		System.exit(0);
+  	}
+
+  	//Help | About action performed
+  	public void jMenuHelpAbout_actionPerformed(ActionEvent e) 
+  	{
+  		new about();
+  	}
+
+  	//Overridden so we can exit when window is closed
+  	protected void processWindowEvent(WindowEvent e) 
+  	{
+	    super.processWindowEvent(e);
+	    if (e.getID() == WindowEvent.WINDOW_CLOSING) 
+	    {
+	      jMenuFileExit_actionPerformed(null);
+	    }
+  	}
+
+  	void adduser_actionPerformed(ActionEvent e)
+  	{
+  		new adduser();
+  	}
+
+  	void xgmm_actionPerformed(ActionEvent e)
+  	{
+  		new xiugaimima();
+
+  	}
+  	void tjbj_actionPerformed(ActionEvent e) 
+  	{
+  		new addbj();
+  	}
+
+  	void exit_actionPerformed(ActionEvent e) 
+  	{
+  		System.exit(0);
+  	}
+
+  	void xgbj_actionPerformed(ActionEvent e) 
+  	{
+  		new xgbj();
+  	}
+
+  	void xjgl_actionPerformed(ActionEvent e) 
+  	{
+  		
+  	}
+
+  	void login_actionPerformed(ActionEvent e) 
+  	{
+	    String username = JOptionPane.showInputDialog(this, "请输入用户名");
+	    String pwd = JOptionPane.showInputDialog(this, "请输入密码");
+	    if (! (username == null && pwd == null)) 
+	    {
+	    	try 
+	    	{	//连接数据库，验证用户
+	    		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+	    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123456");
+	    		ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+	    		try 
+	    		{
+	    			rs = ps.executeQuery("select * from users where username='" +username + "' "); //读取数据库
+	    			if (!rs.next())
+	    			{
+	    				JOptionPane.showMessageDialog(null, "不存在此用户！");
+	    			}
+	    			else if (! (rs.getString("pwd").trim().equals(pwd))) 
+	    			{
+	        		  JOptionPane.showMessageDialog(null, "密码错误！");
+	    			}
+	    			else 
+	    			{
+	    				if (rs.getString("power").trim().equals("系统管理员")) 
+	    				{
+	    					xjgl.setEnabled(true);	//学籍管理
+	    					bjgl.setEnabled(true);	//班级管理
+	    					kcsz.setEnabled(true);	//课程设置
+	    					cjgl.setEnabled(true);	//成绩管理
+	    					jMenuFile.setEnabled(true);
+	    					llyh.setEnabled(true);	//浏览用户
+	    					adduser.setEnabled(true);	//添加用户
+	    				}
+	    				else 
+	    				{
+	    					cjgl.setEnabled(true);
+	    					xjgl.setEnabled(true);
+	    					xgcj.setEnabled(false);
+	    					tjcj.setEnabled(false);
+	    					xgxj.setEnabled(false);
+	    					tjxj.setEnabled(false);
+	    				}
+	    			}
+	    		}
+
+	    		catch (SQLException sqle) 
+	    		{
+	    			String error = sqle.getMessage();
+	    			JOptionPane.showMessageDialog(null, error);
+	    			sqle.printStackTrace();
+	    		}
+	    	}
+	       catch (Exception err) 
+	       {
+	    	   //  err.getMessage();
+	    	   String error = err.getMessage();
+	    	   JOptionPane.showMessageDialog(null, error);
+	       }
+	    }
+	}
+//  	void login_actionPerformed(ActionEvent e)
+//  	{
+//  		String username = JOptionPane.showInputDialog(this, "请输入用户名");
+//  		String pwd = JOptionPane.showInputDialog(this, "请输入密码");
+//  		if (! (username.equals("lee"))&&! (username.equals("sa")))
+//		{
+//			JOptionPane.showMessageDialog(null, "不存在此用户！");
+//		}
+//  		else if (! (pwd.equals("123"))) 
+//		{
+//  			JOptionPane.showMessageDialog(null, "密码错误！");
+//		}
+//  		else 
+//		{
+//			if (username.equals("sa")) 
+//			{
+//				JOptionPane.showMessageDialog(null, "登录成功！");
+//				login.setEnabled(false);
+//				xjgl.setEnabled(true);	//学籍管理
+//				bjgl.setEnabled(true);	//班级管理
+//				kcsz.setEnabled(true);	//课程设置
+//				cjgl.setEnabled(true);	//成绩管理
+//				jMenuFile.setEnabled(true);
+//				llyh.setEnabled(true);	//浏览用户
+//				adduser.setEnabled(true);	//添加用户
+//			}
+//			else 
+//			{
+//				JOptionPane.showMessageDialog(null, "登录成功！");
+//				login.setEnabled(false);
+//				cjgl.setEnabled(true);
+//				xjgl.setEnabled(true);
+//				xgcj.setEnabled(false);
+//				tjcj.setEnabled(false);
+//				xgxj.setEnabled(false);
+//				tjxj.setEnabled(false);
+//			}
+//		}
+//  		
+//  	}
+
+	void tjxj_actionPerformed(ActionEvent e) 
+	{
+		new tjxjxx();  //添加学籍模块
+	}
+	void xgxj_actionPerformed(ActionEvent e) 
+	{
+		new xgxjxx();	//修改学籍模块
+	}
+	void cxxjxx_actionPerformed(ActionEvent e) 
+	{
+		new cxxjxx();  //查询学籍模块
+	}
+	void tjkc_actionPerformed(ActionEvent e) 
+	{
+	    new tjkcxx();  //添课程信息模块
+	}
+
+	void llyh_actionPerformed(ActionEvent e) 
+	{
+		new scanusers();	//用户模块
+	}
+
+	void jMenuItem1_actionPerformed(ActionEvent e) 
+	{
+		new xiugaimima();//修改密码模块
+	}
+	void xgkc_actionPerformed(ActionEvent e) 
+	{
+		new xgkcxx();//修改密码模块
+	}
+	void sznj_actionPerformed(ActionEvent e) 
+	{
+		new sznjkc();//设置年级课程模块
+	}
+	void tjcj_actionPerformed(ActionEvent e) 
+	{
+		new addresult();//添加成绩模块
+	}
+	void xgcj_actionPerformed(ActionEvent e) 
+	{
+		new xgcj();//修改成绩模块
+	}
+	void cxcj_actionPerformed(ActionEvent e) 
+	{
+		new scanresult();//浏览模块
+	}
+	void jMenuItem4_actionPerformed(ActionEvent e) 
+	{
+		ImageIcon icon2 = new ImageIcon("images" + File.separator+"forest.jpg");
+		jLabel1.setIcon(icon2);
+		contentPane.add(jLabel1, null);
+	}
+	void jMenuItem2_actionPerformed(ActionEvent e) 
+	{
+		ImageIcon icon2 = new ImageIcon("images" + File.separator+"jgs.jpg");
+		jLabel1.setIcon(icon2);
+		contentPane.add(jLabel1, null);
+	}
+	void jMenuItem5_actionPerformed(ActionEvent e) 
+	{
+	    ImageIcon icon2 = new ImageIcon("images" + File.separator+"shuijing.jpg");
+	    jLabel1.setIcon(icon2);
+	    contentPane.add(jLabel1, null);
+	}
+
+	void jMenuItem3_actionPerformed(ActionEvent e) 
+	{
+	    ImageIcon icon2 = new ImageIcon("images" + File.separator+"Autumn.jpg");
+	    jLabel1.setIcon(icon2);
+	    contentPane.add(jLabel1, null);
+	}
+
+	void jMenu1_actionPerformed(ActionEvent e) 
+	{
+		
+	}
+
+	void jMenuItem7_actionPerformed(ActionEvent e) 
+	{
+		//AudioPlayer.player.start(as);
+	    jMenuItem7.setEnabled(false);
+	
+	    FileInputStream fileau = null;
+		try 
+		{
+			fileau = new FileInputStream("music" + File.separator+"lzlh.mid");	
+		}
+		catch (FileNotFoundException ex) 
+		{
+			
+		}
+
+	    try 
+	    {
+	    	as = new AudioStream(fileau);
+	        AudioPlayer.player.start(as);
+	      //    System.out.println("添加音乐成功1");
+	        }
+	    catch (Exception e1)      
+	    {
+	    	e1.printStackTrace();
+	    }
+	}
+	
+	void jMenuItem6_actionPerformed(ActionEvent e) 
+	{
+		AudioPlayer.player.stop(as);
+		jMenuItem7.setEnabled(true);
+	}
+}
+
+class mainFrame_jMenuHelpAbout_ActionAdapter implements ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_jMenuHelpAbout_ActionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jMenuHelpAbout_actionPerformed(e);
+	}
+}
+
+class mainFrame_adduser_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_adduser_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.adduser_actionPerformed(e);
+	}
+}
+
+class mainFrame_tjbj_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_tjbj_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e)	//用于接收操作事件的侦听器接口。
+												//比如你创建了一个button，对他添加一个监听器，在这个监听器当中就有一个actionPerformed方法。
+												//如果你要求这个button做一些事情，你就可以在actionPerformed方法中写你要做的事情
+	{
+		adaptee.tjbj_actionPerformed(e);
+	}
+}
+
+class mainFrame_exit_mouseAdapter  extends java.awt.event.MouseAdapter 
+{
+	mainFrame adaptee;
+	mainFrame_exit_mouseAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+}
+
+class mainFrame_xgbj_actionAdapter  implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+
+	mainFrame_xgbj_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.xgbj_actionPerformed(e);
+	}
+}
+
+class mainFrame_exit_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+
+	mainFrame_exit_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.exit_actionPerformed(e);
+	}
+}
+
+class mainFrame_xjgl_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_xjgl_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.xjgl_actionPerformed(e);
+	}
+}
+
+class mainFrame_tjxj_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_tjxj_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.tjxj_actionPerformed(e);
+	}
+}
+
+class mainFrame_xgxj_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_xgxj_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.xgxj_actionPerformed(e);
+	}
+}
+
+class mainFrame_cxxjxx_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+
+	mainFrame_cxxjxx_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.cxxjxx_actionPerformed(e);
+	}
+}
+
+class mainFrame_tjkc_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+
+	mainFrame_tjkc_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.tjkc_actionPerformed(e);
+	}
+}
+
+class mainFrame_llyh_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+
+	mainFrame_llyh_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.llyh_actionPerformed(e);
+	}
+}
+
+class mainFrame_jMenuItem1_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+
+	mainFrame_jMenuItem1_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jMenuItem1_actionPerformed(e);
+	}	
+}
+
+class mainFrame_xgkc_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_xgkc_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.xgkc_actionPerformed(e);
+	}
+}
+class mainFrame_sznj_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_sznj_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.sznj_actionPerformed(e);
+	}
+}
+class mainFrame_tjcj_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_tjcj_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.tjcj_actionPerformed(e);
+	}
+}
+class mainFrame_xgcj_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_xgcj_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.xgcj_actionPerformed(e);
+	}
+}
+class mainFrame_cxcj_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_cxcj_actionAdapter(mainFrame adaptee) 
+	{		
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.cxcj_actionPerformed(e);
+	}
+}
+class mainFrame_login_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_login_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.login_actionPerformed(e);	//用户登录验证
+	}
+}
+class mainFrame_jMenuItem4_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_jMenuItem4_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jMenuItem4_actionPerformed(e);
+	}
+}
+class mainFrame_jMenuItem2_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_jMenuItem2_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jMenuItem2_actionPerformed(e);
+	}
+}
+class mainFrame_jMenuItem5_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_jMenuItem5_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jMenuItem5_actionPerformed(e);
+	}
+}
+class mainFrame_jMenuItem3_actionAdapter implements ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_jMenuItem3_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jMenuItem3_actionPerformed(e);
+	}
+}
+class mainFrame_jMenu1_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_jMenu1_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jMenu1_actionPerformed(e);
+	}
+}
+class mainFrame_jMenuItem7_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_jMenuItem7_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jMenuItem7_actionPerformed(e);
+	}
+}
+class mainFrame_jMenuItem6_actionAdapter implements java.awt.event.ActionListener 
+{
+	mainFrame adaptee;
+	mainFrame_jMenuItem6_actionAdapter(mainFrame adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jMenuItem6_actionPerformed(e);
+	}
+}
