@@ -1,0 +1,191 @@
+/*
+ * 查询学籍信息*/
+package FileSystem;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class cxxjxx extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Statement ps;
+	ResultSet rs;
+	Connection con;	
+	String url;
+
+	JScrollPane jScrollPane1 = new JScrollPane();
+	Object[][] rowData = new Object[10][9];
+	String[] columnNames = {"学号", "姓名", "性别", "出生日期", "班号", "联系电话", "入校日期", "家庭住址", "备注"};
+	JTable jTable1 = new JTable(rowData, columnNames);
+	JButton cancel = new JButton();
+	JButton ok = new JButton();
+	JTextField input = new JTextField();
+	ButtonGroup buttonGroup2 = new ButtonGroup();
+	JRadioButton xh = new JRadioButton();
+	JRadioButton xm = new JRadioButton();
+	JRadioButton bh = new JRadioButton();
+	public cxxjxx() 
+	{
+		try 
+		{
+			jbInit();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) 
+	{
+		new cxxjxx();
+	}
+
+	private void jbInit() throws Exception 
+	{
+	    this.setLocale(java.util.Locale.getDefault());
+	    this.getContentPane().setLayout(null);//设置布局要取得Frame的contentpane，通过contentpane的方法setlayout设置布管理器
+	    this.getContentPane().add(jScrollPane1, null);
+	    this.getContentPane().add(input, null); 
+	    this.getContentPane().add(cancel, null);
+	    this.getContentPane().add(ok, null);
+	    this.getContentPane().add(bh, null);	//班号
+	    this.getContentPane().add(xm, null);	//姓名
+	    this.getContentPane().add(xh, null);	//学号
+	    this.setBounds(100, 100, 800, 500);
+	    this.setVisible(true);
+	    this.setTitle("学籍信息查询");
+	    jScrollPane1.setBounds(new Rectangle(6, 0, 780, 400));
+	    
+	    cancel.setBounds(new Rectangle(578, 412, 85, 30));
+	    cancel.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cancel.setText("取   消");
+	    cancel.addActionListener(new cxxjxx_cancel_actionAdapter(this));
+	    
+	    ok.setBounds(new Rectangle(465, 412, 85, 30));
+	    ok.setFont(new java.awt.Font("Dialog", 0, 15));
+	    ok.setText("确   定");
+	    ok.addActionListener(new cxxj_ok_actionAdapter(this));
+	    ok.setToolTipText("直接点击确定，可查询全部学生信息");
+	    
+	    input.setFont(new java.awt.Font("Dialog", 0, 15));
+	    input.setText("");
+	    input.setBounds(new Rectangle(291, 410, 124, 31));
+	    
+	    xh.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xh.setRolloverEnabled(false);
+	    xh.setText("按学号");
+	    xh.setBounds(new Rectangle(20, 417, 74, 34));
+	    
+	    xm.setBounds(new Rectangle(95, 417, 74, 34));
+	    xm.setText("按姓名");
+	    xm.setRolloverEnabled(false);
+	    xm.setFont(new java.awt.Font("Dialog", 0, 15));
+	    
+	    bh.setBounds(new Rectangle(174, 418, 74, 34));
+	    bh.setText("按班号");
+	    bh.setRolloverEnabled(false);
+	    bh.setFont(new java.awt.Font("Dialog", 0, 15));
+	    
+	    jScrollPane1.getViewport().add(jTable1, null);
+	    buttonGroup2.add(xh);
+	    buttonGroup2.add(bh);
+	    buttonGroup2.add(xm);
+	}
+
+	void cancel_actionPerformed(ActionEvent e) 
+	{
+		this.dispose();
+	}
+
+	void ok_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{ //连接数据库
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123456");
+
+			ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+
+			int i = 0;
+			try 
+			{
+				if (xh.isSelected()) 
+				{
+					rs = ps.executeQuery("select * from student where student_ID='" +input.getText().trim() + "'");
+					//用statement类的executeQuery()方法来下达select指令以查询数据库，executeQuery()方法会把数据库响应
+					//的查询结果存放在ResultSet类对象中供我们使用。
+					//即语句：String sql="select * from"+tableName; ResultSet rs=s.executeQuery(sql);
+				}
+				else if (xm.isSelected()) 
+				{
+					rs = ps.executeQuery("select * from student where student_Name='" +input.getText().trim() + "'");
+				}
+				else if (bh.isSelected()) 
+				{
+					rs = ps.executeQuery("select * from student where class_NO='" +input.getText().trim() + "'");
+				}
+				else
+					rs = ps.executeQuery("select * from student");
+			}
+
+			catch (Exception err) 
+			{
+				err.getMessage();
+                JOptionPane.showMessageDialog(null, err);
+			}
+			
+			while (rs.next()) 
+			{
+		        rowData[i][0] = rs.getString("student_ID");	//学号
+		        rowData[i][1] = rs.getString("student_Name");	//姓名
+		        rowData[i][2] = rs.getString("student_Sex");	//性别
+		        rowData[i][3] = rs.getString("born_Date").substring(0, 10);	//出生日期
+		        rowData[i][4] = rs.getString("class_NO");	//班号
+		        rowData[i][5] = rs.getString("tele_Number");	//联系电话
+		        rowData[i][6] = rs.getString("ru_Date").substring(0, 10);	//入学日期
+		        rowData[i][7] = rs.getString("address");	//家庭住址
+		        rowData[i][8] = rs.getString("comment");	//备注
+		        i = i + 1;
+			}
+		}
+		catch (Exception err) 
+		{
+			err.getMessage();
+			JOptionPane.showMessageDialog(null, err);
+		}
+	}
+}
+
+class cxxjxx_cancel_actionAdapter implements java.awt.event.ActionListener 
+{
+	cxxjxx adaptee;
+	cxxjxx_cancel_actionAdapter(cxxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		adaptee.cancel_actionPerformed(e);
+	}
+}
+
+class cxxj_ok_actionAdapter  implements java.awt.event.ActionListener 
+{
+	cxxjxx adaptee;
+
+	cxxj_ok_actionAdapter(cxxjxx adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.ok_actionPerformed(e);
+	}
+}
