@@ -1,0 +1,99 @@
+package FileSystem;
+import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import java.io.File;
+import java.awt.Window;
+import java.awt.Toolkit;
+import java.awt.Canvas;
+import java.awt.Image;
+import java.awt.Graphics;
+import java.awt.Dimension;
+
+public class Start extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	BorderLayout borderLayout1 = new BorderLayout();
+	Window windowSplash;	//新建一个启动画面Window类
+
+	public Start() 
+	{
+		try 
+		{
+			jbInit();
+			prepareSplash();
+			startSplash();
+
+			new Thread();
+			Thread.sleep(3000);	//开始界面停留时间，毫秒位单位
+			stopSplash();
+
+			new mainFrame();
+
+		}
+		catch (Exception exception) 
+		{
+			exception.printStackTrace();
+		}
+	}
+
+	private void jbInit() throws Exception 
+	{
+		getContentPane().setLayout(borderLayout1);
+		//this.setBounds(200,200,480,320);
+	}
+
+	private void prepareSplash() //调用prepareSplash()函数，初始化启动界面
+	{
+	    Toolkit toolkit = Toolkit.getDefaultToolkit();
+	    windowSplash = new Window(this);
+	    //Image img= toolkit.getImage("splash.png");
+	    Image img = toolkit.getImage("images" + File.separator + "haha.jpg");
+	    ImageCanvas canvas = new ImageCanvas(img);
+	    windowSplash.add(canvas, "Center");
+	    Dimension scmSize = toolkit.getScreenSize();
+	    int imgWidth =718;
+	    int imgHeight =474;
+	    windowSplash.setLocation(scmSize.width / 2 - (imgWidth / 2),scmSize.height / 2 - (imgHeight / 2));
+	    windowSplash.setSize(imgWidth, imgHeight);
+	}
+
+	public static void main(String[] args) 
+	{
+		new Start();
+	}
+
+	private void startSplash()   //在Application的JFrame类（主界面）中调用startSplash（），显示启动界面，然后
+  							   //初试化JFrame的各个可视化组件，初始化后台数据库等（如数据库的连接）
+	{
+	    windowSplash.setVisible(true);
+	    windowSplash.toFront();
+	}
+
+	private void stopSplash()   //在所有的初始化工作完成之后，调用stopSplash（）函数，停止显示启动画面
+	{
+		windowSplash.dispose();
+	}
+
+}
+
+class ImageCanvas extends Canvas 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Image image;
+	public ImageCanvas(Image img) 
+	{
+		this.image = img;
+	}
+
+	public void paint(Graphics g) 
+	{
+		g.drawImage(image, 0, 0, this);
+
+	}
+}
