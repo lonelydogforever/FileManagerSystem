@@ -1,0 +1,164 @@
+/*
+ * 添加学籍信息*/
+
+package FileSystem;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class addxj extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Statement ps;
+	ResultSet rs;
+	Connection con;
+	String url;
+
+	JLabel jLabel1 = new JLabel();
+	JLabel jLabel2 = new JLabel();
+	JLabel jLabel3 = new JLabel();
+	JLabel jLabel4 = new JLabel();
+	JTextField banhao = new JTextField();
+	JTextField banzhuren = new JTextField();
+	JTextField nianji = new JTextField();
+	JTextField banhao3 = new JTextField();
+	JButton jButton1 = new JButton();
+	JButton jButton2 = new JButton();
+	JTextField jiaoshi = new JTextField();
+
+	public addxj() 
+	{
+		try 
+		{
+			jbInit();
+		}
+		catch(Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void main(String[] args) 
+	{
+		new addxj();
+	}
+	private void jbInit() throws Exception 
+	{
+	    jButton2.setBounds(new Rectangle(164, 196, 92, 43));
+	    jButton2.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jButton2.setText("取  消");
+	    jButton1.setBounds(new Rectangle(55, 195, 96, 45));
+	    jButton1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jButton1.setText("确认添加");
+	    jButton1.addActionListener(new addxj_jButton1_actionAdapter(this));
+	    jLabel1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel1.setText("班   号");
+	    jLabel1.setBounds(new Rectangle(65, 35, 48, 35));
+	    this.getContentPane().setLayout(null);
+	    jLabel2.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel2.setText("班主任");
+	    jLabel2.setBounds(new Rectangle(63, 67, 54, 38));
+	    jLabel3.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel3.setText("年   级");
+	    jLabel3.setBounds(new Rectangle(62, 107, 52, 34));
+	    jLabel4.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel4.setText("教   室");
+	    jLabel4.setBounds(new Rectangle(62, 144, 52, 36));
+	    banhao.setEditable(true);
+	    banhao.setText("");
+	    banhao.setBounds(new Rectangle(132, 38, 106, 29));
+	    banzhuren.setBounds(new Rectangle(134, 77, 102, 29));
+	    banzhuren.setEditable(true);
+	    banzhuren.setText("");
+	    nianji.setBounds(new Rectangle(133, 110, 107, 29));
+	    nianji.setEditable(true);
+	    nianji.setText("");
+	    jiaoshi.setBounds(new Rectangle(132, 145, 102, 29));
+	    jiaoshi.setEditable(true);
+	    jiaoshi.setText("");
+	    jiaoshi.setText("");
+	    jiaoshi.setEditable(true);
+	    jiaoshi.setBounds(new Rectangle(132, 148, 107, 29));
+	    this.setResizable(false);
+	    this.setTitle("添加班级信息");
+	    this.getContentPane().add(banzhuren, null);
+	    this.getContentPane().add(nianji, null);
+	    this.getContentPane().add(jLabel4, null);
+	    this.getContentPane().add(jLabel3, null);
+	    this.getContentPane().add(jLabel2, null);
+	    this.getContentPane().add(jLabel1, null);
+	    this.getContentPane().add(jiaoshi, null);
+	    this.getContentPane().add(banhao, null);
+	    this.getContentPane().add(jButton2, null);
+	    this.getContentPane().add(jButton1, null);
+	    this.getContentPane().add(jiaoshi, null);
+	    this.setBounds(200, 200,300, 300);
+	    this.setVisible(true);
+	}
+
+	void jButton1_actionPerformed(ActionEvent e) 
+	{
+		JOptionPane.showConfirmDialog(null,"确定添加？", "添加学籍", JOptionPane.YES_NO_OPTION);
+		try 	
+		{
+			try 
+			{
+				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+	    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123456");
+
+				ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			}
+			catch (Exception err) 
+			{
+				err.getMessage();
+
+				JOptionPane.showMessageDialog(null, "连接数据库错误!");
+			}
+			try 
+			{
+				String bh= banhao.getText().trim();	//trim()函数去掉两边空格等/t/n/v/f/r
+				String bzr = banzhuren.getText().trim();
+				String nj = nianji.getText().trim();
+				String js= jiaoshi.getText().trim();
+
+				ps.executeUpdate("Insert Into  class Values('"+bh+"','"+nj+"','" +bzr+"','"+js +"')");
+				ps.close();
+				JOptionPane.showMessageDialog(null, "添加成功");
+
+				this.dispose();
+			}
+
+			catch (SQLException sqle) 
+			{
+				String error = sqle.getMessage();
+				JOptionPane.showMessageDialog(null, error);
+				sqle.printStackTrace();
+			}
+		}
+		catch (Exception ex) 
+		{
+			ex.getMessage();
+			String error = ex.getMessage();
+			JOptionPane.showMessageDialog(null, error);
+			ex.printStackTrace();
+		}
+	}
+}
+
+class addxj_jButton1_actionAdapter implements java.awt.event.ActionListener 
+{
+	addxj adaptee;
+
+	addxj_jButton1_actionAdapter(addxj adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.jButton1_actionPerformed(e);
+	}
+}
