@@ -1,0 +1,187 @@
+package FileSystem;
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class xiugaimima extends JDialog 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Statement ps;
+	Statement slt;
+	ResultSet rs;
+	Connection con;
+	String url;
+	JPanel panel1 = new JPanel();
+	JLabel jLabel1 = new JLabel();
+	JTextField userF = new JTextField();
+	JLabel jLabel2 = new JLabel();
+	JButton cancel = new JButton();
+	JButton sure = new JButton();
+	JPasswordField pwd = new JPasswordField();
+	JLabel jLabel3 = new JLabel();
+	JPasswordField pwd1 = new JPasswordField();
+	private javax.swing.JFileChooser jFileChooser1;
+	public xiugaimima(Frame frame, String title, boolean modal) 
+	{
+		super(frame, title, true);
+		try 
+		{
+			jbInit();
+			pack();
+		}
+		catch (Exception ex) 
+		{
+			ex.printStackTrace();
+		}
+  }
+
+	public xiugaimima() 
+	{
+		this(null, "修改密码", true);
+	}
+
+	private void jbInit() throws Exception 
+	{
+	    panel1.setLayout(null);
+	    this.setModal(true);
+	    this.getContentPane().setLayout(null);
+	    panel1.setBounds(new Rectangle( -5, 0, 400, 300));
+	    jLabel1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel1.setText("输入用户名");
+	    jLabel1.setBounds(new Rectangle(31, 23, 89, 36));
+	    userF.setText("");
+	    userF.setBounds(new Rectangle(123, 21, 124, 36));
+	    jLabel2.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel2.setText("输入新密码");
+	    jLabel2.setBounds(new Rectangle(30, 69, 78, 38));
+	    cancel.setBounds(new Rectangle(148, 169, 89, 35));
+	    cancel.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cancel.setText("重填");
+	    cancel.addActionListener(new xiugaimima_cancel_actionAdapter(this));
+	    sure.setBounds(new Rectangle(46, 167, 88, 37));
+	    sure.setFont(new java.awt.Font("Dialog", 0, 15));
+	    sure.setText("确定");
+	    sure.addActionListener(new xiugaimima_sure_actionAdapter(this));
+	    pwd.setText("");
+	    pwd.setBounds(new Rectangle(119, 74, 128, 33));
+	    jLabel3.setBounds(new Rectangle(29, 113, 78, 38));
+	    jLabel3.setText("再次输入");
+	    jLabel3.setFont(new java.awt.Font("Dialog", 0, 15));
+	    pwd1.setBounds(new Rectangle(119, 116, 128, 33));
+	    pwd1.setText("");
+	    this.getContentPane().add(panel1, null);
+	    panel1.add(userF, null);
+	    panel1.add(jLabel1, null);
+	    panel1.add(jLabel2, null);
+	    panel1.add(pwd, null);
+	    panel1.add(pwd1, null);
+	    panel1.add(cancel, null);
+	    panel1.add(sure, null);
+	    panel1.add(jLabel3, null);
+	    this.setBounds(300, 300, 300, 250);
+	    this.setVisible(true);
+	}
+
+	void cancel_actionPerformed(ActionEvent e) 
+	{
+	    pwd.setText("");
+	    userF.setText("");
+	    pwd1.setText("");
+	}
+
+	void sure_actionPerformed(ActionEvent e) 
+	{
+		JOptionPane.showConfirmDialog(null,"确定修改", "修改密码", JOptionPane.YES_NO_OPTION);
+		try 
+		{
+			if (String.valueOf(pwd.getPassword()).trim() == String.valueOf(pwd1.getPassword()).trim()) 
+			{
+				// trim()从当前对象移除所有前导空白字符和尾部空白字符
+				//name.getText()  换成 String.valueOf(name.getPassword())
+				try 
+				{
+					Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123456");
+
+					ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+					slt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+				}
+				catch (Exception err)
+				{
+					err.printStackTrace(System.out);
+				}
+				try 
+				{
+					//   rs=slt .executeQuery("select * from yonghu where yonghuming='" +
+					//    userF.getText().trim() + "' ");
+					ps.executeUpdate("Update users set pwd='" + String.valueOf(pwd.getPassword()).trim() +
+									 "' where username='" + userF.getText().trim() + "'");
+					JOptionPane.showMessageDialog(null, "修改成功");
+
+					// System.out.println(newPWD);
+					this.dispose();
+				}
+				catch (SQLException sqle)
+				{
+					String error = sqle.getMessage();
+					JOptionPane.showMessageDialog(null, error);
+					sqle.printStackTrace();
+				}
+			}
+			else 
+			{
+				JOptionPane.showMessageDialog(null, "两次密码不一致！请重新输入");
+            }
+		}
+		catch (Exception ex) 
+		{
+			ex.getMessage();
+			String error = ex.getMessage();
+			JOptionPane.showMessageDialog(null, error);
+			ex.printStackTrace();
+		}
+	}
+	
+	void jButton1_actionPerformed(ActionEvent e) 
+	{
+		if(JFileChooser.APPROVE_OPTION==jFileChooser1.showOpenDialog(this))
+		{
+           String  path=jFileChooser1.getSelectedFile().getPath();
+           pwd.setText(path);
+		}
+	}
+}
+
+class xiugaimima_cancel_actionAdapter implements java.awt.event.ActionListener 
+{
+	xiugaimima adaptee;
+	xiugaimima_cancel_actionAdapter(xiugaimima adaptee)
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.cancel_actionPerformed(e);
+	}
+}
+
+class xiugaimima_sure_actionAdapter implements java.awt.event.ActionListener 
+{
+	xiugaimima adaptee;
+
+	xiugaimima_sure_actionAdapter(xiugaimima adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		adaptee.sure_actionPerformed(e);
+	}
+}
