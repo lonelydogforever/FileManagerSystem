@@ -1,0 +1,280 @@
+/*
+ * 设置年级课程*/
+
+package FileSystem;
+
+import javax.swing.*;
+import java.awt.*;
+import java.sql.*;
+import java.awt.event.*;
+import java.util.Vector;
+
+public class sznjkc extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	JLabel jLabel1 = new JLabel();
+	JComboBox nj = new JComboBox();
+	JLabel jLabel2 = new JLabel();
+	
+	JButton add = new JButton();
+	JButton remove = new JButton();
+	JButton cancel = new JButton();
+	JButton szkc = new JButton();
+	JButton ok = new JButton();
+	Statement ps,grade;
+	ResultSet rs,ss,grades;
+	Connection con;
+	String url;
+	List allcourse = new List();
+	List sz = new List();
+	Vector v = new Vector();
+	int buttonnumber;
+
+	public sznjkc() 
+	{
+		try 
+		{
+			jbInit();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123456");
+
+			ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			grade= con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+		}
+		catch (Exception err) 
+		{
+			err.getMessage();
+			JOptionPane.showMessageDialog(null, "连接数据库错误!");
+		}
+		try
+		{
+			grades= grade.executeQuery("select * from class");
+			while (grades.next()) 
+			{
+				nj.addItem(grades.getString("grade"));
+			}
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void main(String[] args) 
+	{
+		new sznjkc();
+	}
+
+	private void jbInit() throws Exception 
+	{
+		jLabel1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel1.setText("选择年级");
+	    jLabel1.setBounds(new Rectangle(112, 16, 74, 33));
+	    this.getContentPane().setLayout(null);
+	    this.setTitle("设置年级课程");
+	    nj.setBounds(new Rectangle(205, 19, 104, 28));
+	    jLabel2.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel2.setText("所有课程");
+	    jLabel2.setBounds(new Rectangle(25, 48, 74, 34));
+	
+	    add.setBounds(new Rectangle(198, 120, 75, 34));
+	    add.setFont(new java.awt.Font("Dialog", 0, 15));
+	    add.setText("添  加");
+	    add.addActionListener(new sznjkc_add_actionAdapter(this));
+	    remove.setBounds(new Rectangle(196, 189, 75, 32));
+	    remove.setFont(new java.awt.Font("Dialog", 0, 15));
+	    remove.setText("移  除");
+	    remove.addActionListener(new sznjkc_remove_actionAdapter(this));
+	    cancel.setBounds(new Rectangle(292, 317, 79, 32));
+	    cancel.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cancel.setText("退  出");
+	    cancel.addActionListener(new sznjkc_cancel_actionAdapter(this));
+	    szkc.setText("显示所有课程");
+	    szkc.addActionListener(new sznjkc_szkc_actionAdapter(this));
+	    szkc.setBounds(new Rectangle(36, 317, 134, 32));
+	    szkc.setFont(new java.awt.Font("Dialog", 0, 15));
+	    ok.setText("确   定");
+	    ok.addActionListener(new sznjkc_ok_actionAdapter(this));
+	    ok.setFont(new java.awt.Font("Dialog", 0, 15));
+	    ok.setBounds(new Rectangle(191, 317, 79, 32));
+	    allcourse.setBounds(new Rectangle(19, 89, 169, 209));
+	    sz.setBounds(new Rectangle(279, 90, 180, 209));
+	    //  int i=2003;
+	
+	    this.getContentPane().add(cancel, null);
+	    this.getContentPane().add(szkc, null);
+	    this.getContentPane().add(ok, null);
+	    this.getContentPane().add(jLabel2, null);
+	    this.getContentPane().add(allcourse, null);
+	    this.getContentPane().add(sz, null);
+	    this.getContentPane().add(add, null);
+	    this.getContentPane().add(remove, null);
+	    this.getContentPane().add(nj, null);
+	    this.getContentPane().add(jLabel1, null);
+	        this.setBounds(200, 200, 500, 400);
+	    this.setVisible(true);
+  }
+	
+	void szkc_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			rs = ps.executeQuery("select * from course");
+			while (rs.next()) 
+			{
+				allcourse.add(rs.getString("course_Name"));
+			}
+		}
+		catch (Exception err) 
+		{
+			err.getMessage();
+			JOptionPane.showMessageDialog(null, "没有数据!");
+		}
+	}
+
+	void ok_actionPerformed(ActionEvent e) 
+	{
+		//    System.out.print(sz.getItems().toString());
+		JOptionPane.showConfirmDialog(null,"确定设置？", "设置年级课程！", JOptionPane.YES_NO_OPTION);
+		try
+		{
+			//  int g=v.get();
+			for(int i=0;i<buttonnumber;i++)
+			{
+				ps.executeUpdate("Insert Into gradecourse Values('"+nj.getSelectedItem().toString()+"','"+v.get(i)+"')");
+            }
+            JOptionPane.showMessageDialog(null, "添加所选课程成功");
+            this.dispose();
+		}
+		catch (SQLException ex) 
+		{
+			String error = ex.getMessage();
+			JOptionPane.showMessageDialog(null, error);
+            //  sqle.printStackTrace();
+       	}
+	}
+
+	void cancel_actionPerformed(ActionEvent e) 
+	{
+		this.dispose();
+	}
+
+	void add_actionPerformed(ActionEvent e) 
+	{
+		try
+		{
+			sz.add(allcourse.getSelectedItem());
+			v.addElement(allcourse.getSelectedItem().trim());
+			allcourse.remove(allcourse.getSelectedItem());
+			buttonnumber++;
+		}
+		catch (Exception err) 
+		{
+			err.getMessage();
+			JOptionPane.showMessageDialog(null, "没有选择任何课程!");
+		}
+	}
+	void remove_actionPerformed(ActionEvent e)
+	{
+		try
+		{ 
+			allcourse.add(sz.getSelectedItem());
+			sz.remove(sz.getSelectedItem());
+			v.remove(sz.getSelectedItem());
+			buttonnumber--;
+		}
+		catch (Exception err) 
+		{
+			err.getMessage();
+			JOptionPane.showMessageDialog(null, "没有选择任何课程!");
+
+		}
+	}
+}
+
+class sznjkc_szkc_actionAdapter implements java.awt.event.ActionListener
+{
+	sznjkc adaptee;
+
+	sznjkc_szkc_actionAdapter(sznjkc adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.szkc_actionPerformed(e);
+	}
+}
+
+class sznjkc_ok_actionAdapter implements java.awt.event.ActionListener 
+{
+	sznjkc adaptee;
+
+	sznjkc_ok_actionAdapter(sznjkc adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.ok_actionPerformed(e);
+	}
+}
+
+class sznjkc_cancel_actionAdapter implements java.awt.event.ActionListener 
+{
+	sznjkc adaptee;
+
+	sznjkc_cancel_actionAdapter(sznjkc adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.cancel_actionPerformed(e);
+	}
+}
+
+class sznjkc_add_actionAdapter implements java.awt.event.ActionListener 
+{
+	sznjkc adaptee;
+
+	sznjkc_add_actionAdapter(sznjkc adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		adaptee.add_actionPerformed(e);
+	}
+}
+
+class sznjkc_remove_actionAdapter implements java.awt.event.ActionListener
+{
+	sznjkc adaptee;
+
+	sznjkc_remove_actionAdapter(sznjkc adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.remove_actionPerformed(e);
+	}
+}
