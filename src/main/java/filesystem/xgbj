@@ -1,0 +1,436 @@
+package FileSystem;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class xgbj extends JFrame 
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ResultSet rs;
+	Statement ps, ins,sc,del;
+	Connection con;
+
+	JLabel jLabel1 = new JLabel();
+	JLabel jLabel2 = new JLabel();
+	JLabel jLabel3 = new JLabel();
+	JLabel jLabel4 = new JLabel();
+	JTextField bh = new JTextField();
+	JTextField bzr = new JTextField();
+	JTextField nj = new JTextField();
+	JTextField js = new JTextField();
+	JButton first = new JButton();
+	JLabel jLabel5 = new JLabel();
+	JButton next = new JButton();
+	JButton last = new JButton();
+	JButton previous = new JButton();
+	JButton xgjl = new JButton();
+	JButton gxsj = new JButton();
+	JButton scjl = new JButton();
+	JButton cencel = new JButton();
+	JLabel jLabel6 = new JLabel();
+
+	public xgbj() 
+	{
+		try 
+		{
+			jbInit();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		try 
+		{ 	//连接数据库
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    		Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;DatabaseName=学生档案管理系统","sa", "123456");
+
+			ps = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			ins = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			sc= con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			del= con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+            rs = ps.executeQuery("select * from class");
+
+            if (rs.next()) 
+            {
+		        bh.setText(rs.getString("class_No"));
+		        nj.setText(rs.getString("grade"));
+		        bzr.setText(rs.getString("director"));
+		        js.setText(rs.getString("classroom_No"));
+            }
+		}
+		catch (Exception err) 
+		{
+			err.printStackTrace(System.out);
+		}
+	}
+	
+	public static void main(String[] args) 
+	{
+		new xgbj();
+	}
+
+	private void jbInit() throws Exception 
+	{
+	    jLabel1.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel1.setText("班  号");
+	    jLabel1.setBounds(new Rectangle(47, 33, 59, 38));
+	    this.getContentPane().setLayout(null);
+	    jLabel2.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel2.setText("班主任");
+	    jLabel2.setBounds(new Rectangle(42, 81, 59, 39));
+	    jLabel3.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel3.setText("年  级");
+	    jLabel3.setBounds(new Rectangle(255, 35, 49, 37));
+	    jLabel4.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel4.setText("教  室");
+	    jLabel4.setBounds(new Rectangle(257, 87, 49, 35));
+	    bh.setBackground(SystemColor.menu);
+	    bh.setEditable(false);
+	    bh.setText("");
+	    bh.setBounds(new Rectangle(101, 36, 121, 37));
+	    bzr.setText("");
+	    bzr.setBounds(new Rectangle(102, 84, 122, 33));
+	    nj.setText("");
+	    nj.setBounds(new Rectangle(316, 39, 114, 33));
+	    js.setText("");
+	    js.setBounds(new Rectangle(319, 84, 114, 33));
+	    first.setBounds(new Rectangle(30, 185, 83, 34));
+	    first.setFont(new java.awt.Font("Dialog", 0, 15));
+	    first.setText("第一条");
+	    first.addActionListener(new xgbj_first_actionAdapter(this));
+	    jLabel5.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel5.setText("查看班级信息");
+	    jLabel5.setBounds(new Rectangle(27, 135, 104, 36));
+	    next.setText("下一条");
+	    next.addActionListener(new xgbj_next_actionAdapter(this));
+	    next.setBounds(new Rectangle(230, 183, 83, 34));
+	    next.setFont(new java.awt.Font("Dialog", 0, 15));
+	    last.setText("最后一条");
+	    last.addActionListener(new xgbj_last_actionAdapter(this));
+	    last.setBounds(new Rectangle(324, 182, 99, 34));
+	    last.setFont(new java.awt.Font("Dialog", 0, 15));
+	    previous.setText("上一条");
+	    previous.addActionListener(new xgbj_previous_actionAdapter(this));
+	    previous.setBounds(new Rectangle(126, 182, 83, 34));
+	    previous.setFont(new java.awt.Font("Dialog", 0, 15));
+	    xgjl.setText("修改数据");
+	    xgjl.addActionListener(new xgbj_xgjl_actionAdapter(this));
+	    xgjl.setBounds(new Rectangle(28, 274, 97, 34));
+	    xgjl.setFont(new java.awt.Font("Dialog", 0, 15));
+	    gxsj.setText("更新数据");
+	    gxsj.addActionListener(new xgbj_gxsj_actionAdapter(this));
+	    gxsj.setBounds(new Rectangle(138, 274, 101, 34));
+	    gxsj.setFont(new java.awt.Font("Dialog", 0, 15));
+	    scjl.setText("删除记录");
+	    scjl.addActionListener(new xgbj_scjl_actionAdapter(this));
+	    scjl.setBounds(new Rectangle(251, 275, 98, 34));
+	    scjl.setFont(new java.awt.Font("Dialog", 0, 15));
+	    cencel.setText("退  出");
+	    cencel.addActionListener(new xgbj_cencel_actionAdapter(this));
+	    cencel.setBounds(new Rectangle(353, 275, 83, 34));
+	    cencel.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel6.setFont(new java.awt.Font("Dialog", 0, 15));
+	    jLabel6.setText("修改班级信息");
+	    jLabel6.setBounds(new Rectangle(38, 231, 130, 41));
+	    this.setResizable(false);
+	    this.setTitle("修改班级信息");
+	    this.getContentPane().add(jLabel1, null);
+	    this.getContentPane().add(jLabel2, null);
+	    this.getContentPane().add(bh, null);
+	    this.getContentPane().add(bzr, null);
+	    this.getContentPane().add(jLabel3, null);
+	    this.getContentPane().add(nj, null);
+	    this.getContentPane().add(js, null);
+	    this.getContentPane().add(jLabel4, null);
+	    this.getContentPane().add(jLabel5, null);
+	    this.getContentPane().add(xgjl, null);
+	    this.getContentPane().add(gxsj, null);
+	    this.getContentPane().add(jLabel6, null);
+	    this.getContentPane().add(next, null);
+	    this.getContentPane().add(last, null);
+	    this.getContentPane().add(previous, null);
+	    this.getContentPane().add(first, null);
+	    this.getContentPane().add(cencel, null);
+	    this.getContentPane().add(scjl, null);
+	    this.setBounds(200, 200, 500, 400);
+	    this.setVisible(true);
+	}
+
+	void xgjl_actionPerformed(ActionEvent e) 
+	{
+		JOptionPane.showConfirmDialog(null,"确定修改！", "修改记录", JOptionPane.YES_NO_OPTION);
+		try 
+		{
+            ins.executeUpdate("Update class set grade='" + nj.getText().trim() +
+                        	  "' ,director='" + bzr.getText().trim() +
+                        	  "' ,classroom_No='" + js.getText().trim() +
+                        	  "'  where class_No='"+ bh.getText().trim() + "'");
+            JOptionPane.showMessageDialog(null, "修改数据成功!");
+		}
+
+		catch (SQLException ex) 
+		{
+			String err=ex.getMessage();
+			JOptionPane.showMessageDialog(null, err);
+		}
+	}
+
+	void first_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			if (rs.first()) 
+			{
+		        bh.setText("" + rs.getInt("class_No"));
+		        nj.setText(rs.getString("grade"));
+		        bzr.setText(rs.getString("director"));
+		        js.setText(rs.getString("classroom_No"));
+			}
+		}
+		catch (SQLException ex) 
+		{
+		}
+
+	}
+
+	void last_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			if (rs.last()) 
+			{
+				bh.setText( rs.getString("class_No"));
+				nj.setText(rs.getString("grade"));
+				bzr.setText(rs.getString("director"));
+				js.setText(rs.getString("classroom_No"));
+			}
+		}
+		catch (SQLException ex)
+		{
+		}
+	}
+
+	void previous_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			if (rs.previous()) 
+			{
+				bh.setText( rs.getString("class_No"));
+				nj.setText(rs.getString("grade"));
+				bzr.setText(rs.getString("director"));
+				js.setText(rs.getString("classroom_No"));
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null, "这是第一条记录!");
+            }
+		}
+		catch (SQLException ex) 
+		{
+		}
+
+	}
+
+	void next_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			if (rs.next()) 
+			{
+				bh.setText( rs.getString("class_No"));
+				nj.setText(rs.getString("grade"));
+				bzr.setText(rs.getString("director"));
+				js.setText(rs.getString("classroom_No"));
+			}
+			else 
+			{
+				JOptionPane.showMessageDialog(null, "这是最后一条记录!");
+			}
+		}
+		catch (SQLException ex) 
+		{
+		}
+	}
+
+	void gxsj_actionPerformed(ActionEvent e) 
+	{
+		try 
+		{
+			rs = ps.executeQuery("select * from class");
+			//   rs.beforeFirst();
+			try 
+			{
+				if (rs.next()) 
+				{
+					bh.setText( rs.getString("class_No"));
+					nj.setText(rs.getString("grade"));
+					bzr.setText(rs.getString("director"));
+					js.setText(rs.getString("classroom_No"));
+				}
+			}
+			catch (SQLException ex) 
+			{
+			}
+		}
+		catch (SQLException ex) 
+		{
+		}
+	}
+
+	void scjl_actionPerformed(ActionEvent e) 
+	{
+		JOptionPane.showConfirmDialog(null, "确定删除？将删除数据库中所有此班级记录！", "删除记录", JOptionPane.YES_NO_OPTION);
+		try 
+		{
+			if(!(bh.getText().trim()==null)){
+				ins.executeUpdate("delete from class where class_No='" + bh.getText().trim() +
+                        "'");
+				sc.executeUpdate("delete from student where class_No='" + bh.getText().trim() +
+                        "'");
+				del.executeUpdate("delete from result where class_No='" + bh.getText().trim() +
+                        "'");
+				JOptionPane.showMessageDialog(null, "删除成功!");
+				rs = ps.executeQuery("select * from class");
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null, "已经没有记录了!");
+			}
+		}
+		catch (SQLException ex) 
+		{
+		}
+
+	}
+
+	void cencel_actionPerformed(ActionEvent e) 
+	{
+		this.dispose();
+	}
+}
+
+class xgbj_xgjl_actionAdapter  implements java.awt.event.ActionListener 
+{
+	xgbj adaptee;
+
+	xgbj_xgjl_actionAdapter(xgbj adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.xgjl_actionPerformed(e);
+	}
+}
+
+class xgbj_first_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgbj adaptee;
+
+	xgbj_first_actionAdapter(xgbj adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.first_actionPerformed(e);
+	}
+}
+
+class xgbj_previous_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgbj adaptee;
+
+	xgbj_previous_actionAdapter(xgbj adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.previous_actionPerformed(e);
+	}
+}
+
+class xgbj_next_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgbj adaptee;
+
+	xgbj_next_actionAdapter(xgbj adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.next_actionPerformed(e);
+	}
+}
+
+class xgbj_last_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgbj adaptee;
+
+	xgbj_last_actionAdapter(xgbj adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.last_actionPerformed(e);
+	}
+}
+
+class xgbj_gxsj_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgbj adaptee;
+
+	xgbj_gxsj_actionAdapter(xgbj adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.gxsj_actionPerformed(e);
+	}
+}
+
+class xgbj_scjl_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgbj adaptee;
+
+	xgbj_scjl_actionAdapter(xgbj adaptee) 
+	{
+    this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+    adaptee.scjl_actionPerformed(e);
+	}
+}
+
+class xgbj_cencel_actionAdapter implements java.awt.event.ActionListener 
+{
+	xgbj adaptee;
+
+	xgbj_cencel_actionAdapter(xgbj adaptee) 
+	{
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		adaptee.cencel_actionPerformed(e);
+	}
+}
