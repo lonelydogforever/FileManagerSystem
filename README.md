@@ -1,2 +1,2 @@
 # FileManagerSystem
-学生档案管理系统
+This is a simple archive manegement system.
